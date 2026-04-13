@@ -197,17 +197,17 @@ export default function MyRoutesPageContent() {
             
             <section className="py-16 lg:py-24">
                 <div className="container mx-auto px-4">
-                    <Tabs defaultValue="tour" className="w-full">
+                    <Tabs defaultValue="tours" className="w-full">
                         <div className="flex justify-center mb-12">
                             <TabsList>
-                                <TabsTrigger value="tour">Туры</TabsTrigger>
-                                <TabsTrigger value="hotel">Жилье</TabsTrigger>
+                                <TabsTrigger value="tours">Туры</TabsTrigger>
+                                <TabsTrigger value="housing">Жилье</TabsTrigger>
                                 <TabsTrigger value="restaurants">Кафе и рестораны</TabsTrigger>
-                                <TabsTrigger value="activity">Активности</TabsTrigger>
+                                <TabsTrigger value="activities">Развлечения</TabsTrigger>
                                 <TabsTrigger value="rental-car">Авто</TabsTrigger>
                             </TabsList>
                         </div>
-                        <TabsContent value="tour">
+                        <TabsContent value="tours">
                             <div className="text-center max-w-2xl mx-auto mb-12">
                                 <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Наши лучшие туры</h2>
                                 <p className="text-lg text-muted-foreground">Исследуйте мир с нашими самыми популярными и высоко оцененными турами.</p>
@@ -246,14 +246,14 @@ export default function MyRoutesPageContent() {
                                 ))}
                             </div>
                         </TabsContent>
-                        <TabsContent value="hotel">
+                        <TabsContent value="housing">
                              <div className="text-center py-12 text-muted-foreground">Здесь скоро будут предложения по жилью.</div>
                         </TabsContent>
                         <TabsContent value="restaurants">
                              <div className="text-center py-12 text-muted-foreground">Здесь скоро будут предложения по кафе и ресторанам.</div>
                         </TabsContent>
-                        <TabsContent value="activity">
-                             <div className="text-center py-12 text-muted-foreground">Здесь скоро будут предложения по активностям.</div>
+                        <TabsContent value="activities">
+                             <div className="text-center py-12 text-muted-foreground">Здесь скоро будут предложения по развлечениям.</div>
                         </TabsContent>
                         <TabsContent value="rental-car">
                              <div className="text-center py-12 text-muted-foreground">Здесь скоро будут предложения по аренде авто.</div>

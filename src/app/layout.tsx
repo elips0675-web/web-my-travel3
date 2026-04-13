@@ -36,6 +36,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Link href="/restaurants" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Кафе и рестораны
               </Link>
+              <Link href="/activities" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Развлечения
+              </Link>
               <Link href="/rental-car" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Авто
               </Link>
