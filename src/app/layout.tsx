@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import { Compass, PlusCircle } from 'lucide-react';
+import { Compass, PlusCircle, Menu } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import './globals.css';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 export const metadata = {
   title: 'Путевой Компас',
@@ -27,36 +28,71 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Compass className="h-6 w-6 text-primary" />
               <span className="font-headline text-xl font-bold text-foreground">Путевой Компас</span>
             </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/tours" className="text-base font-medium text-muted-foreground transition-colors hover:text-foreground">
+            <nav className="hidden md:flex items-center gap-x-8">
+              <Link href="/tours" className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Туры
               </Link>
-              <Link href="/housing" className="text-base font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/housing" className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Жилье
               </Link>
-              <Link href="/restaurants" className="text-base font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/restaurants" className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Кафе и рестораны
               </Link>
-              <Link href="/activities" className="text-base font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/activities" className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Развлечения
               </Link>
-              <Link href="/rental-car" className="text-base font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/rental-car" className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Транспорт
               </Link>
-              <Link href="/multi-filter" className="text-base font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/multi-filter" className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Фильтр
               </Link>
-              <Link href="/filter-map" className="text-base font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link href="/filter-map" className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Фильтр-карта
               </Link>
             </nav>
           </div>
-          <Button asChild>
-            <Link href="/routes/new">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Новый маршрут
-            </Link>
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button asChild className="hidden md:flex">
+              <Link href="/routes/new">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Новый маршрут
+              </Link>
+            </Button>
+            <div className="md:hidden">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Открыть меню</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left">
+                  <nav className="grid gap-6 text-lg font-medium mt-8">
+                    <Link href="/" className="flex items-center gap-2 text-lg font-semibold mb-4">
+                      <Compass className="h-6 w-6 text-primary" />
+                      <span>Путевой Компас</span>
+                    </Link>
+                    <Link href="/tours" className="text-muted-foreground hover:text-foreground">Туры</Link>
+                    <Link href="/housing" className="text-muted-foreground hover:text-foreground">Жилье</Link>
+                    <Link href="/restaurants" className="text-muted-foreground hover:text-foreground">Кафе и рестораны</Link>
+                    <Link href="/activities" className="text-muted-foreground hover:text-foreground">Развлечения</Link>
+                    <Link href="/rental-car" className="text-muted-foreground hover:text-foreground">Транспорт</Link>
+                    <Link href="/multi-filter" className="text-muted-foreground hover:text-foreground">Фильтр</Link>
+                    <Link href="/filter-map" className="text-muted-foreground hover:text-foreground">Фильтр-карта</Link>
+                  </nav>
+                  <div className="absolute bottom-8 left-6 right-6">
+                     <Button asChild className="w-full">
+                        <Link href="/routes/new">
+                           <PlusCircle className="mr-2 h-4 w-4" />
+                           Новый маршрут
+                        </Link>
+                     </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
         </header>
         <main className="flex-1">
           {children}
