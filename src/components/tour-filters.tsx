@@ -62,8 +62,8 @@ export function TourFilters() {
           <h4 className="font-semibold mb-4">Цена</h4>
           <Slider defaultValue={[5000]} max={15000} step={500} />
           <div className="flex justify-between text-sm text-muted-foreground mt-2">
-            <span>₽0</span>
-            <span>₽15000+</span>
+            <span>BYN 0</span>
+            <span>BYN 15000+</span>
           </div>
         </div>
 

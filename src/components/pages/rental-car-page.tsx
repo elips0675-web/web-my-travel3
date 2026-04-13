@@ -141,12 +141,12 @@ function LoadingSkeleton() {
 
 const mockTransportData: AiRentalCarRecommendationsOutput = {
     recommendations: [
-        { name: "Яндекс.Драйв", type: "Каршеринг", supplier: "Яндекс", price: "от 8 ₽/мин", rating: 4.7, features: { passengers: 5, luggage: 2, transmission: "Автомат", doors: 4 }, imageUrl: "https://picsum.photos/seed/yandexdrive/800/600" },
-        { name: "Ситидрайв", type: "Каршеринг", supplier: "Ситимобил", price: "от 7.5 ₽/мин", rating: 4.6, features: { passengers: 5, luggage: 2, transmission: "Автомат", doors: 4 }, imageUrl: "https://picsum.photos/seed/citydrive/800/600" },
-        { name: "Яндекс.Такси", type: "Такси", supplier: "Яндекс", price: "от 150 ₽", rating: 4.8, features: { passengers: 4 }, imageUrl: "https://picsum.photos/seed/yandextaxi/800/600" },
-        { name: "Nextbike", type: "Велосипеды", supplier: "Nextbike", price: "от 50 ₽/час", rating: 4.5, features: { passengers: 1 }, imageUrl: "https://picsum.photos/seed/nextbike/800/600" },
-        { name: "Whoosh", type: "Самокаты", supplier: "Whoosh", price: "50₽ старт, 7₽/мин", rating: 4.6, features: { passengers: 1 }, imageUrl: "https://picsum.photos/seed/whoosh/800/600" },
-        { name: "Uber", type: "Такси", supplier: "Uber", price: "от 140 ₽", rating: 4.7, features: { passengers: 4 }, imageUrl: "https://picsum.photos/seed/uber/800/600" },
+        { name: "Яндекс.Драйв", type: "Каршеринг", supplier: "Яндекс", price: "от 0.3 BYN/мин", rating: 4.7, features: { passengers: 5, luggage: 2, transmission: "Автомат", doors: 4 }, imageUrl: "https://picsum.photos/seed/yandexdrive/800/600" },
+        { name: "Ситидрайв", type: "Каршеринг", supplier: "Ситимобил", price: "от 0.25 BYN/мин", rating: 4.6, features: { passengers: 5, luggage: 2, transmission: "Автомат", doors: 4 }, imageUrl: "https://picsum.photos/seed/citydrive/800/600" },
+        { name: "Яндекс.Такси", type: "Такси", supplier: "Яндекс", price: "от 5 BYN", rating: 4.8, features: { passengers: 4 }, imageUrl: "https://picsum.photos/seed/yandextaxi/800/600" },
+        { name: "Nextbike", type: "Велосипеды", supplier: "Nextbike", price: "от 2 BYN/час", rating: 4.5, features: { passengers: 1 }, imageUrl: "https://picsum.photos/seed/nextbike/800/600" },
+        { name: "Whoosh", type: "Самокаты", supplier: "Whoosh", price: "1.5 BYN старт, 0.2 BYN/мин", rating: 4.6, features: { passengers: 1 }, imageUrl: "https://picsum.photos/seed/whoosh/800/600" },
+        { name: "Uber", type: "Такси", supplier: "Uber", price: "от 4.5 BYN", rating: 4.7, features: { passengers: 4 }, imageUrl: "https://picsum.photos/seed/uber/800/600" },
     ],
 };
 

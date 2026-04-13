@@ -24,7 +24,7 @@ const TourRecommendationSchema = z.object({
   name: z.string().describe('The name of the tour or excursion.'),
   description: z.string().describe('A brief, engaging description of the tour (2-3 sentences).'),
   type: z.string().describe('The type of activity, e.g., "cultural", "adventure", "food", "sightseeing".'),
-  priceRange: z.string().describe('Estimated price for the tour per person, e.g., "€50" or "$120".'),
+  priceRange: z.string().describe('Estimated price for the tour per person in Belarusian Rubles (BYN), e.g., "150 BYN".'),
   bookingLink: z.string().url().describe('A hypothetical booking link for the tour.'),
   relevanceScore: z.number().min(0).max(100).describe('A score from 0 to 100 indicating how relevant this recommendation is to the user\'s interests and destination.'),
   duration: z.string().describe('The duration of the tour, e.g., "4 hours", "Full day".'),
@@ -56,7 +56,7 @@ For each recommendation, provide the following details:
 - name: The name of the tour.
 - description: A brief, engaging description (2-3 sentences).
 - type: The type of activity (e.g., "cultural", "adventure", "food").
-- priceRange: Estimated price per person (e.g., "€50", "$120").
+- priceRange: Estimated price per person in Belarusian Rubles (BYN), e.g., "150 BYN" or "от 200 BYN".
 - bookingLink: A hypothetical booking link.
 - relevanceScore: A score from 0 to 100 on how well it matches the user's interests.
 - duration: Tour duration (e.g., "4 hours", "Full day").

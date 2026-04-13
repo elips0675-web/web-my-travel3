@@ -45,8 +45,8 @@ export function RentalCarFilters() {
           <h4 className="font-semibold mb-4">Цена</h4>
           <Slider defaultValue={[4000]} max={10000} step={500} />
           <div className="flex justify-between text-sm text-muted-foreground mt-2">
-            <span>₽0</span>
-            <span>₽10000+</span>
+            <span>BYN 0</span>
+            <span>BYN 10000+</span>
           </div>
         </div>
 

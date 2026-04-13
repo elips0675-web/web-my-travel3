@@ -22,7 +22,7 @@ const TransportRecommendationSchema = z.object({
   name: z.string().describe('The transport model or service name, e.g., "Яндекс.Такси", "Whoosh", "Вело-Город".'),
   type: z.string().describe('The transport category: "Каршеринг", "Такси", "Велосипеды", "Самокаты".'),
   supplier: z.string().describe('The company/service provider name, e.g., "Yandex", "Whoosh".'),
-  price: z.string().describe('The estimated price, e.g., "от 8 ₽/мин", "от 150 ₽/поездка", "50 ₽/час".'),
+  price: z.string().describe('The estimated price in Belarusian Rubles (BYN), e.g., "от 0.5 BYN/мин", "от 5 BYN за поездку", "15 BYN/час".'),
   rating: z.number().min(1).max(5).describe('The rating of the service on a scale of 1 to 5.'),
   features: z.object({
     passengers: z.number().optional().describe('Number of passenger seats.'),
@@ -58,7 +58,7 @@ For each recommendation, provide the following in Russian:
 - name: The transport model or service name (e.g., "Яндекс.Драйв", "Такси Комфорт+", "Nextbike", "Whoosh").
 - type: The category from the input transportCategories.
 - supplier: The rental company or service provider name (e.g., "Яндекс", "Ситимобил", "Nextbike", "Whoosh").
-- price: The estimated price (e.g., "от 8 ₽/мин", "от 150 ₽ за поездку", "50 ₽/час", "1.5 BYN старт").
+- price: The estimated price in Belarusian Rubles (BYN), e.g., "от 0.5 BYN/мин", "от 5 BYN за поездку", "15 BYN/час", "1.5 BYN старт".
 - rating: A star rating from 1 to 5.
 - features: An object with details. For cars: passengers, luggage, transmission, doors. For bikes/scooters: passengers can be 1. Other features can be omitted if not applicable.
 - imageUrl: Provide a placeholder image URL from \`https://picsum.photos/seed/{a-random-transport-related-word}/800/600\`.
