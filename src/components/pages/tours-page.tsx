@@ -397,12 +397,10 @@ export default function ToursPageContent() {
                     )}
                 />
               </div>
-               <div className="flex justify-end">
-                <Button type="submit" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Search className="mr-2 h-4 w-4" />}
-                    Найти туры
-                </Button>
-               </div>
+               <Button type="submit" disabled={isLoading} className="w-full md:w-auto">
+                   {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Search className="mr-2 h-4 w-4" />}
+                   Найти туры
+               </Button>
             </form>
           </Form>
         </CardContent>
