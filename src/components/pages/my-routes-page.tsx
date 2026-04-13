@@ -94,14 +94,14 @@ export default function MyRoutesPageContent() {
     ];
 
     const destinations = [
+        { name: "Минск", image: { imageUrl: 'https://picsum.photos/seed/minsk/600/800', description: 'Минск', imageHint: 'minsk city'}},
+        { name: "Брест", image: { imageUrl: 'https://picsum.photos/seed/brest/600/800', description: 'Брест', imageHint: 'brest fortress'}},
+        { name: "Гомель", image: { imageUrl: 'https://picsum.photos/seed/gomel/600/800', description: 'Гомель', imageHint: 'gomel palace'}},
+        { name: "Гродно", image: { imageUrl: 'https://picsum.photos/seed/grodno/600/800', description: 'Гродно', imageHint: 'grodno city'}},
+        { name: "Могилев", image: { imageUrl: 'https://picsum.photos/seed/mogilev/600/800', description: 'Могилев', imageHint: 'mogilev city'}},
+        { name: "Витебск", image: { imageUrl: 'https://picsum.photos/seed/vitebsk/600/800', description: 'Витебск', imageHint: 'vitebsk city'}},
+        { name: "Бобруйск", image: { imageUrl: 'https://picsum.photos/seed/bobruisk/600/800', description: 'Бобруйск', imageHint: 'bobruisk city'}},
         { name: "Париж", image: PlaceHolderImages.find(img => img.id === 'destination-paris') },
-        { name: "Рим", image: PlaceHolderImages.find(img => img.id === 'destination-rome') },
-        { name: "Нью-Йорк", image: PlaceHolderImages.find(img => img.id === 'destination-ny') },
-        { name: "Токио", image: PlaceHolderImages.find(img => img.id === 'destination-tokyo') },
-        { name: "Бали", image: PlaceHolderImages.find(img => img.id === 'destination-bali') },
-        { name: "Санторини", image: PlaceHolderImages.find(img => img.id === 'destination-santorini') },
-        { name: "Лондон", image: { imageUrl: 'https://picsum.photos/seed/london/600/400', description: 'London', imageHint: 'london city'}},
-        { name: "Дубай", image: { imageUrl: 'https://picsum.photos/seed/dubai/600/400', description: 'Dubai', imageHint: 'dubai city'}},
     ];
 
     const whyChooseUsItems = [
