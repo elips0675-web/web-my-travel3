@@ -3,17 +3,20 @@
 import { useUser, useFirestore, useCollection } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Loader2, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
 import { collection, query, where } from 'firebase/firestore';
 import { useMemo, useEffect } from 'react';
 import { useUserProfile } from '@/firebase/auth/use-user-profile';
+import Image from 'next/image';
 
 type Business = {
     id: string;
     name: string;
+    description: string;
     category: string;
+    imageUrl: string;
 };
 
 const categoryLabels: Record<string, string> = {
@@ -71,22 +74,35 @@ export default function DashboardPage() {
                 <CardHeader>
                     <CardTitle>Мои бизнесы</CardTitle>
                     <CardDescription>
-                        Здесь отображаются ваши компании и предложения.
+                        Здесь отображаются ваши компании и предложения в виде доски объявлений.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     {businesses && businesses.length > 0 ? (
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {businesses.map((business) => (
-                                <div key={business.id} className="flex items-center justify-between rounded-lg border p-4">
-                                    <div>
-                                        <p className="font-semibold">{business.name}</p>
-                                        <p className="text-sm text-muted-foreground">{categoryLabels[business.category] || business.category}</p>
+                                <Card key={business.id} className="flex flex-col overflow-hidden">
+                                    <div className="relative aspect-[16/9] w-full">
+                                       <Image
+                                            src={business.imageUrl || 'https://placehold.co/600x400/EEE/31343C?text=No+Image'}
+                                            alt={business.name}
+                                            fill
+                                            className="object-cover"
+                                        />
                                     </div>
-                                    <Button variant="outline" size="sm">
-                                        Управлять
-                                    </Button>
-                                </div>
+                                    <CardHeader>
+                                        <CardTitle>{business.name}</CardTitle>
+                                        <CardDescription>{categoryLabels[business.category] || business.category}</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="flex-grow">
+                                        <p className="text-sm text-muted-foreground line-clamp-3">{business.description}</p>
+                                    </CardContent>
+                                    <CardFooter>
+                                        <Button variant="outline" size="sm" className="w-full">
+                                            Управлять
+                                        </Button>
+                                    </CardFooter>
+                                </Card>
                             ))}
                         </div>
                     ) : (
