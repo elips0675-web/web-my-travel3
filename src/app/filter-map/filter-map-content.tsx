@@ -1,9 +1,11 @@
 'use client';
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { APIProvider, Map, AdvancedMarker, InfoWindow, Pin } from '@vis.gl/react-google-maps';
 import { cn } from '@/lib/utils';
-import { Luggage, Home, Coffee, Gamepad2, Car, Star, MapPin, Clock, Users, Filter, X, List, Locate, Search } from 'lucide-react';
+import { Luggage, Home, Coffee, Gamepad2, Car, Star, MapPin, Clock, Users, Filter, X, List, Locate, Search, Share2, ArrowUp } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 // Icons
 const Icons = {
@@ -127,6 +129,17 @@ const MapComponent = ({ items, activeItem, onMarkerClick, selectedCategories }: 
             });
         }
     };
+    
+    if (!apiKey) {
+        return (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <div className="text-center text-gray-600 p-4">
+                    <h3 className="font-bold text-lg mb-2">Google Maps API ключ не настроен.</h3>
+                    <p>Пожалуйста, добавьте NEXT_PUBLIC_GOOGLE_MAPS_API_KEY в ваш .env.local файл.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <APIProvider apiKey={apiKey!}>
@@ -353,6 +366,42 @@ export default function FilterMapContent() {
     const [viewMode, setViewMode] = useState('split'); // 'split', 'map', 'list'
     const [activeItem, setActiveItem] = useState<any | null>(null);
     const listRef = useRef<HTMLDivElement>(null);
+    const asideRef = useRef<HTMLElement>(null);
+    const [showScrollToTop, setShowScrollToTop] = useState(false);
+    const { toast } = useToast();
+
+    const handleScroll = useCallback(() => {
+        const listScroll = listRef.current?.scrollTop ?? 0;
+        const asideScroll = asideRef.current?.scrollTop ?? 0;
+
+        if (listScroll > 400 || asideScroll > 400) {
+            setShowScrollToTop(true);
+        } else {
+            setShowScrollToTop(false);
+        }
+    }, []);
+
+    const scrollToTop = () => {
+        listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+        asideRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleShare = () => {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Интерактивная карта - Путевой Компас',
+                text: 'Посмотрите, что я нашел на карте!',
+                url: window.location.href,
+            })
+            .catch((error) => console.log('Ошибка при попытке поделиться:', error));
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            toast({
+                title: 'Ссылка скопирована',
+                description: 'Вы можете поделиться ссылкой на эту карту.',
+            });
+        }
+    };
 
     const toggleCategory = (category: string) => {
         setSelectedCategories(prev => {
@@ -440,7 +489,7 @@ export default function FilterMapContent() {
 
             <div className="flex-1 overflow-hidden flex">
                 {(viewMode === 'split' || viewMode === 'list') && (
-                    <aside className={cn('bg-gray-50/50 backdrop-blur-sm border-r border-gray-200 overflow-y-auto', viewMode === 'split' ? 'w-80 hidden lg:block p-4' : 'w-full max-w-sm p-4')}>
+                    <aside ref={asideRef} onScroll={handleScroll} className={cn('bg-gray-50/50 backdrop-blur-sm border-r border-gray-200 overflow-y-auto', viewMode === 'split' ? 'w-80 hidden lg:block p-4' : 'w-full max-w-sm p-4')}>
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="font-bold text-gray-800">Фильтры</h2>
                             {Object.keys(activeFilters).length > 0 && (<button onClick={resetFilters} className="text-xs text-indigo-600 font-medium hover:underline">Сбросить</button>)}
@@ -452,7 +501,7 @@ export default function FilterMapContent() {
                 )}
 
                 {(viewMode === 'split' || viewMode === 'list') && (
-                    <div className={cn('bg-white border-r border-gray-200 overflow-y-auto', viewMode === 'split' ? 'w-96 hidden xl:block' : 'flex-1')} ref={listRef}>
+                    <div className={cn('bg-white border-r border-gray-200 overflow-y-auto', viewMode === 'split' ? 'w-96 hidden xl:block' : 'w-[450px] hidden lg:block', viewMode === 'list' ? 'flex-1 w-auto' : '')} ref={listRef} onScroll={handleScroll}>
                         <div className="p-4 sticky top-0 bg-white/80 backdrop-blur-sm border-b border-gray-100 z-10 flex items-center justify-between">
                             <span className="text-sm text-gray-600">Найдено <span className="font-bold text-gray-900">{filteredData.length}</span></span>
                             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -473,6 +522,16 @@ export default function FilterMapContent() {
                         <MapComponent items={filteredData} activeItem={activeItem} onMarkerClick={setActiveItem} selectedCategories={selectedCategories} />
                     </div>
                 )}
+            </div>
+            <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-3">
+                {showScrollToTop && (
+                    <Button onClick={scrollToTop} size="icon" className="rounded-full shadow-lg h-14 w-14">
+                        <ArrowUp className="h-6 w-6" />
+                    </Button>
+                )}
+                <Button onClick={handleShare} size="icon" variant="secondary" className="rounded-full shadow-lg h-14 w-14">
+                    <Share2 className="h-6 w-6" />
+                </Button>
             </div>
         </div>
     );
