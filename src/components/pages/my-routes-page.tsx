@@ -5,22 +5,34 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
+import * as React from 'react';
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
-import { Search, MapPin, ShieldCheck, Users, Briefcase } from "lucide-react";
+import { Check, ChevronsUpDown, Search, MapPin, ShieldCheck, Users, Briefcase } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { cn } from "@/lib/utils";
 
 const searchSchema = z.object({
   destination: z.string().min(1, { message: "Обязательное поле" }),
-  category: z.string({
-    required_error: "Выберите категорию.",
+  categories: z.array(z.string()).refine((value) => value.length > 0, {
+    message: "Выберите хотя бы одну категорию.",
   }),
 });
+
+const categories = [
+    { id: "tours", label: "Туры" },
+    { id: "housing", label: "Жилье" },
+    { id: "restaurants", label: "Кафе и рестораны" },
+    { id: "activities", label: "Развлечения" },
+    { id: "rental-car", label: "Авто" },
+];
 
 export default function MyRoutesPageContent() {
     const router = useRouter();
@@ -29,13 +41,17 @@ export default function MyRoutesPageContent() {
 
     const form = useForm<z.infer<typeof searchSchema>>({
         resolver: zodResolver(searchSchema),
-        defaultValues: { destination: "" },
+        defaultValues: { 
+            destination: "",
+            categories: [],
+        },
     });
 
     function onSubmit(values: z.infer<typeof searchSchema>) {
         const params = new URLSearchParams();
         params.append("destination", values.destination);
-        router.push(`/${values.category}?${params.toString()}`);
+        values.categories.forEach(category => params.append("category", category));
+        router.push(`/routes/new?${params.toString()}`);
     }
     
     const destinations = [
@@ -95,23 +111,62 @@ export default function MyRoutesPageContent() {
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="category"
+                                    name="categories"
                                     render={({ field }) => (
-                                    <FormItem className="md:col-span-1 text-left">
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="h-14 text-base bg-input border-0">
-                                                    <SelectValue placeholder="Категория" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="tours">Туры</SelectItem>
-                                                <SelectItem value="housing">Жилье</SelectItem>
-                                                <SelectItem value="restaurants">Кафе и рестораны</SelectItem>
-                                                <SelectItem value="activities">Развлечения</SelectItem>
-                                                <SelectItem value="rental-car">Авто</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+                                    <FormItem className="md:col-span-1 text-left flex flex-col justify-end">
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={cn("h-14 text-base bg-input border-0 justify-between", !field.value?.length && "text-muted-foreground")}
+                                                        >
+                                                        <div className="flex gap-1 flex-wrap">
+                                                        {field.value?.length > 0 ? (
+                                                            field.value.length > 2 ? (
+                                                                <Badge variant="secondary">{`${field.value.length} выбрано`}</Badge>
+                                                            ) : (
+                                                                categories
+                                                                .filter((cat) => field.value.includes(cat.id))
+                                                                .map((cat) => <Badge key={cat.id} variant="secondary">{cat.label}</Badge>)
+                                                            )
+                                                        ) : "Категории"}
+                                                        </div>
+                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                                                <div className="p-2 space-y-1">
+                                                {categories.map((category) => (
+                                                    <Button
+                                                        key={category.id}
+                                                        variant="ghost"
+                                                        className="w-full justify-start"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            const selected = field.value || [];
+                                                            const isSelected = selected.includes(category.id);
+                                                            if (isSelected) {
+                                                                field.onChange(selected.filter(id => id !== category.id));
+                                                            } else {
+                                                                field.onChange([...selected, category.id]);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <div className={cn(
+                                                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                                                            field.value?.includes(category.id) ? "bg-primary text-primary-foreground" : "opacity-50 [&_svg]:invisible"
+                                                        )}>
+                                                            <Check className={cn("h-4 w-4")} />
+                                                        </div>
+                                                        {category.label}
+                                                    </Button>
+                                                ))}
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
                                         <FormMessage />
                                     </FormItem>
                                     )}

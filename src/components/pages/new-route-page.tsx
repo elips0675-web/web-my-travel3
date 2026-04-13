@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from 'date-fns/locale';
@@ -24,6 +24,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Название должно содержать не менее 2 символов." }),
@@ -34,15 +35,27 @@ const formSchema = z.object({
   }),
 });
 
+const categoryLabels: { [key: string]: string } = {
+    'tours': 'Туры',
+    'housing': 'Жилье',
+    'restaurants': 'Кафе и рестораны',
+    'activities': 'Развлечения',
+    'rental-car': 'Авто'
+};
+
 export default function NewRoutePageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
+
+  const destinationParam = searchParams.get("destination");
+  const categoriesParam = searchParams.getAll("category");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      destination: "",
+      destination: destinationParam || "",
     },
   });
 
@@ -66,6 +79,16 @@ export default function NewRoutePageContent() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+             {categoriesParam.length > 0 && (
+                <FormItem>
+                    <FormLabel>Выбранные категории</FormLabel>
+                    <div className="flex flex-wrap gap-2">
+                        {categoriesParam.map(category => (
+                            <Badge key={category} variant="secondary">{categoryLabels[category] || category}</Badge>
+                        ))}
+                    </div>
+                </FormItem>
+            )}
             <FormField
               control={form.control}
               name="name"
