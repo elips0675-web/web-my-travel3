@@ -46,7 +46,7 @@ function BookingWidget({ recommendation }: { recommendation: HousingRecommendati
                     <Calendar
                         mode="range"
                         numberOfMonths={1}
-                        className="p-0 mt-2"
+                        className="rounded-md border mt-2"
                         selected={date}
                         onSelect={setDate}
                     />
