@@ -46,6 +46,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Link href="/multi-filter" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Фильтр
               </Link>
+              <Link href="/filter-map" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Фильтр-карта
+              </Link>
             </nav>
           </div>
           <Button asChild>
