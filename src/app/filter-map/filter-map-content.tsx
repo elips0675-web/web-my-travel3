@@ -106,9 +106,11 @@ const MapComponent = ({ items, activeItem, onMarkerClick, selectedCategories }: 
 
     useEffect(() => {
         if (map && items.length > 0) {
-            const bounds = new window.google.maps.LatLngBounds();
-            items.forEach(item => bounds.extend(new window.google.maps.LatLng(item.coords.lat, item.coords.lng)));
-            map.fitBounds(bounds);
+            if (window.google && window.google.maps) {
+                const bounds = new window.google.maps.LatLngBounds();
+                items.forEach(item => bounds.extend(new window.google.maps.LatLng(item.coords.lat, item.coords.lng)));
+                map.fitBounds(bounds);
+            }
         }
     }, [items, map]);
     
@@ -426,7 +428,7 @@ export default function FilterMapContent() {
 
             <div className="flex-1 overflow-hidden flex">
                 {(viewMode === 'split' || viewMode === 'list') && (
-                    <aside className={cn('bg-gray-50 border-r border-gray-200 overflow-y-auto', viewMode === 'split' ? 'w-80 hidden lg:block p-4' : 'w-full max-w-sm p-4')}>
+                    <aside className={cn('bg-gray-50/50 backdrop-blur-sm border-r border-gray-200 overflow-y-auto', viewMode === 'split' ? 'w-80 hidden lg:block p-4' : 'w-full max-w-sm p-4')}>
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="font-bold text-gray-800">Фильтры</h2>
                             {Object.keys(activeFilters).length > 0 && (<button onClick={resetFilters} className="text-xs text-indigo-600 font-medium hover:underline">Сбросить</button>)}
@@ -439,7 +441,7 @@ export default function FilterMapContent() {
 
                 {(viewMode === 'split' || viewMode === 'list') && (
                     <div className={cn('bg-white border-r border-gray-200 overflow-y-auto', viewMode === 'split' ? 'w-96 hidden xl:block' : 'flex-1')} ref={listRef}>
-                        <div className="p-4 sticky top-0 bg-white border-b border-gray-100 z-10 flex items-center justify-between">
+                        <div className="p-4 sticky top-0 bg-white/80 backdrop-blur-sm border-b border-gray-100 z-10 flex items-center justify-between">
                             <span className="text-sm text-gray-600">Найдено <span className="font-bold text-gray-900">{filteredData.length}</span></span>
                             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="rating">По рейтингу</option>
@@ -447,9 +449,9 @@ export default function FilterMapContent() {
                                 <option value="price-desc">Сначала дороже</option>
                             </select>
                         </div>
-                        <div className="p-4 space-y-4">
+                        <div className={cn("p-4 gap-4", viewMode === 'list' ? "grid grid-cols-1 md:grid-cols-2" : "grid grid-cols-1")}>
                             {filteredData.map(item => (<div key={item.id} id={`item-${item.id}`}><ResultCard item={item} isActive={activeItem?.id === item.id} onClick={setActiveItem} onHover={setActiveItem} /></div>))}
-                            {filteredData.length === 0 && (<div className="text-center py-12"><div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center"><Icons.Filter /></div><p className="text-gray-500 text-sm">Ничего не найдено</p></div>)}
+                            {filteredData.length === 0 && (<div className="text-center py-12 col-span-full"><div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center"><Icons.Filter /></div><p className="text-gray-500 text-sm">Ничего не найдено</p></div>)}
                         </div>
                     </div>
                 )}
