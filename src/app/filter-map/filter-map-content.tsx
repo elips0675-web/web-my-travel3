@@ -447,9 +447,9 @@ export default function FilterMapContent() {
                                 <option value="price-desc">Сначала дороже</option>
                             </select>
                         </div>
-                        <div className="p-4 space-y-4">
+                        <div className="p-4 grid grid-cols-2 gap-4">
                             {filteredData.map(item => (<div key={item.id} id={`item-${item.id}`}><ResultCard item={item} isActive={activeItem?.id === item.id} onClick={setActiveItem} onHover={setActiveItem} /></div>))}
-                            {filteredData.length === 0 && (<div className="text-center py-12"><div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center"><Icons.Filter /></div><p className="text-gray-500 text-sm">Ничего не найдено</p></div>)}
+                            {filteredData.length === 0 && (<div className="text-center py-12 col-span-2"><div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center"><Icons.Filter /></div><p className="text-gray-500 text-sm">Ничего не найдено</p></div>)}
                         </div>
                     </div>
                 )}
