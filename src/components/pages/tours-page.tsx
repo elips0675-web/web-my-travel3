@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from 'next/image';
 
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarIcon, Loader2, Search, Star, Clock, Users } from "lucide-react";
+import { CalendarIcon, Loader2, Search, Star, Clock, Users, Heart } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from 'date-fns/locale';
 import { aiTourRecommendations, type AiTourRecommendationsOutput } from '@/ai/flows/ai-tour-recommendations';
@@ -193,6 +193,8 @@ const mockToursWithSlugs: TourRecommendationWithSlug[] = mockTourData.map((tour,
 
 function TourCard({ tour, index }: { tour: TourRecommendationWithSlug, index: number }) {
     const rating = tour.relevanceScore / 20;
+    const [isFavorite, setIsFavorite] = useState(false);
+
     return (
         <Card className="group overflow-hidden transition-shadow hover:shadow-xl flex flex-col rounded-2xl">
             <div className="relative h-48 overflow-hidden">
@@ -203,6 +205,18 @@ function TourCard({ tour, index }: { tour: TourRecommendationWithSlug, index: nu
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                     data-ai-hint={tour.type}
                 />
+                 <Button
+                    size="icon"
+                    variant="ghost"
+                    className="absolute top-3 left-3 bg-black/20 backdrop-blur-sm rounded-full text-white hover:text-red-500 hover:bg-black/30 transition-colors"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsFavorite(!isFavorite);
+                    }}
+                >
+                    <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
+                </Button>
                 <div className="absolute top-3 right-3 bg-card/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
                     <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                     <span className="font-semibold text-card-foreground">{rating.toFixed(1)}</span>
@@ -283,6 +297,12 @@ export default function ToursPageContent() {
     },
   });
 
+  useEffect(() => {
+     if(typeof window !== 'undefined' && !hasSearched) {
+        sessionStorage.setItem('tourRecommendations', JSON.stringify(mockToursWithSlugs));
+    }
+  }, [hasSearched]);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setHasSearched(true);
@@ -319,10 +339,7 @@ export default function ToursPageContent() {
   }
 
   const currentTours = hasSearched ? recommendations : mockToursWithSlugs;
-  if(typeof window !== 'undefined' && !hasSearched) {
-      sessionStorage.setItem('tourRecommendations', JSON.stringify(mockToursWithSlugs));
-  }
-
+  
   const totalPages = Math.ceil(currentTours.length / itemsPerPage);
   const paginatedTours = currentTours.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
