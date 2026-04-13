@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Download, X } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // This interface is a subset of the actual BeforeInstallPromptEvent
 interface BeforeInstallPromptEvent extends Event {
@@ -17,6 +18,7 @@ interface BeforeInstallPromptEvent extends Event {
 export default function PwaInstallBanner() {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (event: Event) => {
@@ -55,7 +57,7 @@ export default function PwaInstallBanner() {
     setIsVisible(false);
   };
 
-  if (!isVisible) {
+  if (!isVisible || !isMobile) {
     return null;
   }
 
