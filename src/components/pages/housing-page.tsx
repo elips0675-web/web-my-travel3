@@ -3,8 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +31,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { HousingFilters } from "@/components/housing-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 
+type RecommendationWithSlug = AiHousingRecommendationsOutput['recommendations'][0] & { slug: string };
+
 const formSchema = z.object({
   destination: z.string().min(2, { message: "Пункт назначения должен содержать не менее 2 символов." }),
   dates: z.object({
@@ -39,7 +42,7 @@ const formSchema = z.object({
   preferences: z.string().min(3, { message: "Опишите ваши предпочтения."}),
 });
 
-function HousingCard({ recommendation, index }: { recommendation: AiHousingRecommendationsOutput['recommendations'][0], index: number }) {
+function HousingCard({ recommendation, index }: { recommendation: RecommendationWithSlug, index: number }) {
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-xl md:flex">
       <div className="md:w-2/5 relative">
@@ -118,7 +121,9 @@ function HousingCard({ recommendation, index }: { recommendation: AiHousingRecom
                 <span className="font-bold text-xl">{recommendation.priceEstimate}</span>
                 <span className="text-muted-foreground text-sm"> / ночь</span>
             </div>
-            <Button>Посмотреть</Button>
+            <Button asChild>
+                <Link href={`/housing/${recommendation.slug}`}>Посмотреть</Link>
+            </Button>
         </CardFooter>
       </div>
     </Card>
@@ -202,11 +207,36 @@ const mockHousingData: AiHousingRecommendationsOutput = {
     ],
   };
 
+const generateSlug = (name: string, index: number) => {
+    const rusToLat: { [key: string]: string } = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
+        'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+        'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'c',
+        'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'
+    };
+    return name.toLowerCase()
+        .split('').map(char => rusToLat[char] || char).join('')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-') + `-${index}`;
+};
 
 export default function HousingPageContent() {
-  const [recommendations, setRecommendations] = useState<AiHousingRecommendationsOutput | null>(null);
+  const [displayedRecommendations, setDisplayedRecommendations] = useState<RecommendationWithSlug[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const mockRecsWithSlugs = mockHousingData.recommendations.map((rec, index) => ({
+        ...rec,
+        slug: generateSlug(rec.name, index)
+    }));
+    if (typeof window !== 'undefined') {
+        sessionStorage.setItem('housingRecommendations', JSON.stringify(mockRecsWithSlugs));
+    }
+    setDisplayedRecommendations(mockRecsWithSlugs);
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -218,7 +248,8 @@ export default function HousingPageContent() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setRecommendations(null);
+    setHasSearched(true);
+    setDisplayedRecommendations([]);
     try {
       const result = await aiHousingRecommendations({
         destination: values.destination,
@@ -226,7 +257,17 @@ export default function HousingPageContent() {
         endDate: values.dates.to.toISOString().split('T')[0],
         preferences: values.preferences,
       });
-      setRecommendations(result);
+
+      const recommendationsWithSlugs = result.recommendations.map((rec, index) => ({
+          ...rec,
+          slug: generateSlug(rec.name, index)
+      }));
+
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('housingRecommendations', JSON.stringify(recommendationsWithSlugs));
+      }
+      setDisplayedRecommendations(recommendationsWithSlugs);
+
     } catch (error) {
       console.error(error);
       toast({
@@ -238,6 +279,8 @@ export default function HousingPageContent() {
       setIsLoading(false);
     }
   }
+
+  const currentRecommendations = hasSearched ? displayedRecommendations : mockHousingData.recommendations.map((rec, index) => ({...rec, slug: generateSlug(rec.name, index)}));
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -313,7 +356,7 @@ export default function HousingPageContent() {
         </CardContent>
       </Card>
       
-      {!isLoading && !recommendations && (
+      {!isLoading && !hasSearched && (
           <div className="flex flex-col items-center justify-center text-center p-8 border-2 border-dashed rounded-lg max-w-4xl mx-auto mb-8">
               <Search className="h-12 w-12 text-muted-foreground/50 mb-4" />
               <h3 className="text-xl font-semibold">Результаты появятся здесь</h3>
@@ -329,20 +372,20 @@ export default function HousingPageContent() {
         <main className="lg:col-span-3">
           {isLoading && <LoadingSkeleton />}
           
-          {recommendations && (
+          {!isLoading && hasSearched && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-headline font-bold">Найдено {recommendations.recommendations.length} вариантов</h2>
-              {recommendations.recommendations.map((rec, index) => (
-                <HousingCard key={index} recommendation={rec} index={index} />
+              <h2 className="text-2xl font-headline font-bold">Найдено {displayedRecommendations.length} вариантов</h2>
+              {displayedRecommendations.map((rec, index) => (
+                <HousingCard key={rec.slug} recommendation={rec} index={index} />
               ))}
             </div>
           )}
 
-          {!isLoading && !recommendations && (
+          {!isLoading && !hasSearched && (
               <div className="space-y-6">
                   <h2 className="text-2xl font-headline font-bold">Популярные предложения</h2>
-                  {mockHousingData.recommendations.map((rec, index) => (
-                      <HousingCard key={index} recommendation={rec} index={index} />
+                  {displayedRecommendations.map((rec, index) => (
+                      <HousingCard key={rec.slug} recommendation={rec} index={index} />
                   ))}
               </div>
           )}
