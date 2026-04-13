@@ -128,19 +128,8 @@ const MapComponent = ({ items, activeItem, onMarkerClick, selectedCategories }: 
         }
     };
 
-    if (!apiKey) {
-      return (
-        <div className="h-full w-full bg-muted flex items-center justify-center rounded-lg">
-          <p className="text-muted-foreground text-center p-4">
-            Google Maps API ключ не настроен. <br />
-            Пожалуйста, добавьте NEXT_PUBLIC_GOOGLE_MAPS_API_KEY в ваш .env.local файл.
-          </p>
-        </div>
-      );
-    }
-
     return (
-        <APIProvider apiKey={apiKey}>
+        <APIProvider apiKey={apiKey!}>
             <div className="relative w-full h-full">
                 <Map
                     ref={mapRef}
@@ -472,7 +461,7 @@ export default function FilterMapContent() {
                                 <option value="price-desc">Сначала дороже</option>
                             </select>
                         </div>
-                        <div className={cn("p-4 gap-4", viewMode === 'list' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "grid grid-cols-1")}>
+                        <div className={cn("p-4 gap-4", viewMode === 'list' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : "grid grid-cols-1")}>
                             {filteredData.map(item => (<div key={item.id} id={`item-${item.id}`}><ResultCard item={item} isActive={activeItem?.id === item.id} onClick={setActiveItem} onHover={setActiveItem} /></div>))}
                             {filteredData.length === 0 && (<div className="text-center py-12 col-span-full"><div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center"><Icons.Filter /></div><p className="text-gray-500 text-sm">Ничего не найдено</p></div>)}
                         </div>
