@@ -220,7 +220,12 @@ export default function TourDetailsPageContent({ slug }: { slug: string }) {
                     </div>
 
                     <div className="row-start-1 lg:row-auto">
-                        <BookingWidget tour={tour} />
+                        <BookingWidget 
+                            price={tour.priceRange} 
+                            priceType="чел."
+                            showDatePicker="single"
+                            showGuests={true}
+                        />
                     </div>
                 </div>
             </div>
