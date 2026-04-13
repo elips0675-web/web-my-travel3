@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
+import Image from 'next/image';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarIcon, Loader2, Search, Star, ThumbsUp, ThumbsDown } from "lucide-react";
+import { CalendarIcon, Loader2, Search, Star, MapPin } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from 'date-fns/locale';
 import { aiHousingRecommendations, type AiHousingRecommendationsOutput } from '@/ai/flows/ai-housing-recommendations-flow';
@@ -36,44 +37,49 @@ const formSchema = z.object({
   preferences: z.string().min(3, { message: "Опишите ваши предпочтения."}),
 });
 
-function HousingCard({ recommendation }: { recommendation: AiHousingRecommendationsOutput['recommendations'][0] }) {
+function HousingCard({ recommendation, index }: { recommendation: AiHousingRecommendationsOutput['recommendations'][0], index: number }) {
   return (
-    <Card className="flex flex-col">
-        <CardHeader>
-            <div className="flex justify-between items-start gap-4">
-                <CardTitle className="font-headline">{recommendation.name}</CardTitle>
-                {recommendation.rating && (
-                    <div className="flex items-center gap-1 text-sm font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md shrink-0">
-                        <Star className="w-4 h-4 fill-current" />
-                        <span>{recommendation.rating.toFixed(1)}</span>
-                    </div>
-                )}
+    <Card className="group overflow-hidden flex flex-col">
+        <div className="relative">
+            <Image
+                src={recommendation.imageUrl || `https://picsum.photos/seed/housing${index}/800/600`}
+                alt={recommendation.name}
+                width={800}
+                height={600}
+                className="object-cover aspect-video group-hover:scale-105 transition-transform duration-300"
+                data-ai-hint="apartment interior"
+            />
+            <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-bold uppercase px-2 py-1 rounded">
+                {recommendation.type}
             </div>
-            <CardDescription>{recommendation.type}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex-grow space-y-4">
-            <p className="text-sm text-muted-foreground">{recommendation.description}</p>
-            <div className="space-y-2">
-              <h4 className="font-semibold text-sm flex items-center gap-2"><ThumbsUp className="w-4 h-4 text-green-500" /> Плюсы</h4>
-              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                {recommendation.pros.map((pro, i) => <li key={i}>{pro}</li>)}
-              </ul>
-            </div>
-             <div className="space-y-2">
-              <h4 className="font-semibold text-sm flex items-center gap-2"><ThumbsDown className="w-4 h-4 text-red-500" /> Минусы</h4>
-              <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
-                {recommendation.cons.map((con, i) => <li key={i}>{con}</li>)}
-              </ul>
-            </div>
+            {recommendation.rating && (
+                <div className="absolute top-3 right-3 flex items-center gap-1 text-sm font-bold text-white bg-black/50 px-2 py-1 rounded">
+                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <span>{recommendation.rating.toFixed(1)}</span>
+                </div>
+            )}
+        </div>
+        <CardContent className="p-4 flex flex-col flex-grow">
+            <h3 className="text-lg font-bold font-headline mb-2 group-hover:text-primary transition-colors">{recommendation.name}</h3>
+            {recommendation.location && (
+                <div className="flex items-center text-sm text-muted-foreground mb-4">
+                    <MapPin className="w-4 h-4 mr-1.5" />
+                    {recommendation.location}
+                </div>
+            )}
+            <p className="text-sm text-muted-foreground flex-grow">{recommendation.description}</p>
         </CardContent>
-        <CardFooter className="flex justify-between items-center bg-secondary/50 py-3 px-6">
-            <span className="font-bold text-lg">{recommendation.priceEstimate}</span>
-            <Button>Посмотреть</Button>
+        <CardFooter className="mt-auto flex items-center justify-between p-4 bg-secondary/30">
+            <div>
+                <span className="text-muted-foreground text-sm">От </span>
+                <span className="font-bold text-lg">{recommendation.priceEstimate}</span>
+                <span className="text-muted-foreground text-sm"> / ночь</span>
+            </div>
+            <Button size="sm">Посмотреть</Button>
         </CardFooter>
     </Card>
   )
 }
-
 
 export default function HousingPageContent() {
   const [recommendations, setRecommendations] = useState<AiHousingRecommendationsOutput | null>(null);
@@ -197,7 +203,7 @@ export default function HousingPageContent() {
           <h2 className="text-2xl font-headline font-bold mb-6 text-center">Рекомендации по жилью</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recommendations.recommendations.map((rec, index) => (
-              <HousingCard key={index} recommendation={rec} />
+              <HousingCard key={index} recommendation={rec} index={index} />
             ))}
           </div>
         </div>
