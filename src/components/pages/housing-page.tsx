@@ -23,7 +23,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarIcon, Loader2, Search, Star, MapPin, Award, CheckCircle, XCircle } from "lucide-react";
+import { CalendarIcon, Loader2, Search, Star, MapPin, Award } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from 'date-fns/locale';
 import { aiHousingRecommendations, type AiHousingRecommendationsOutput } from '@/ai/flows/ai-housing-recommendations-flow';
@@ -44,14 +44,14 @@ const formSchema = z.object({
 
 function HousingCard({ recommendation, index }: { recommendation: RecommendationWithSlug, index: number }) {
   return (
-    <Card className="group overflow-hidden transition-shadow hover:shadow-xl md:flex">
-      <div className="md:w-2/5 relative">
+    <Card className="group overflow-hidden transition-shadow hover:shadow-xl flex flex-col">
+      <div className="relative">
         <Image
           src={recommendation.imageUrl || `https://picsum.photos/seed/housing${index}/800/600`}
           alt={recommendation.name}
           width={800}
           height={600}
-          className="object-cover h-full w-full aspect-video md:aspect-auto group-hover:scale-105 transition-transform duration-300"
+          className="object-cover h-full w-full aspect-video group-hover:scale-105 transition-transform duration-300"
           data-ai-hint={`${recommendation.type.toLowerCase()} interior`}
         />
         {recommendation.rating && recommendation.rating >= 4.8 && (
@@ -61,97 +61,64 @@ function HousingCard({ recommendation, index }: { recommendation: Recommendation
             </div>
         )}
       </div>
-      <div className="md:w-3/5 flex flex-col">
-        <CardHeader className="flex flex-row justify-between items-start">
+      <CardHeader>
+        <div className="flex justify-between items-start">
             <div>
                 <CardDescription>{recommendation.type}</CardDescription>
-                <CardTitle className="font-headline text-2xl group-hover:text-primary transition-colors">{recommendation.name}</CardTitle>
+                <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors">{recommendation.name}</CardTitle>
             </div>
             {recommendation.rating && (
-                <div className="flex flex-col items-end shrink-0 pl-4">
-                    <div className="flex items-center gap-1 text-sm font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md">
-                        <Star className="w-4 h-4 fill-current" />
-                        <span>{recommendation.rating.toFixed(1)}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">рейтинг</p>
+                <div className="flex items-center gap-1 text-sm font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md shrink-0">
+                    <Star className="w-4 h-4 fill-current" />
+                    <span>{recommendation.rating.toFixed(1)}</span>
                 </div>
             )}
-        </CardHeader>
-        <CardContent className="flex-grow space-y-4">
-          <div className="flex items-center text-sm text-muted-foreground">
-              <MapPin className="w-4 h-4 mr-1.5" />
-              {recommendation.location}
-          </div>
-          <p className="text-sm text-muted-foreground">{recommendation.description}</p>
-          
-          {(recommendation.pros && recommendation.pros.length > 0) || (recommendation.cons && recommendation.cons.length > 0) ? (
-            <div className="border-t pt-4 space-y-4">
-              {recommendation.pros && recommendation.pros.length > 0 && (
-                <div>
-                    <h4 className="font-semibold text-sm mb-2">Преимущества:</h4>
-                    <div className="flex flex-wrap gap-2">
-                        {recommendation.pros.map((pro, i) => (
-                            <div key={i} className="flex items-center gap-2 text-xs bg-secondary py-1 px-2 rounded">
-                                <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                                <span>{pro}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-              )}
-              {recommendation.cons && recommendation.cons.length > 0 && (
-                <div>
-                    <h4 className="font-semibold text-sm mb-2">Недостатки:</h4>
-                    <div className="flex flex-wrap gap-2">
-                        {recommendation.cons.map((con, i) => (
-                            <div key={i} className="flex items-center gap-2 text-xs bg-destructive/10 text-destructive py-1 px-2 rounded">
-                                <XCircle className="w-3.5 h-3.5" />
-                                <span>{con}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-              )}
-            </div>
-          ) : null}
-        </CardContent>
-        <CardFooter className="mt-auto flex items-center justify-between p-4 bg-secondary/30">
-            <div>
-                <span className="text-muted-foreground text-sm">От </span>
-                <span className="font-bold text-xl">{recommendation.priceEstimate}</span>
-                <span className="text-muted-foreground text-sm"> / ночь</span>
-            </div>
-            <Button asChild>
-                <Link href={`/housing/${recommendation.slug}`}>Посмотреть</Link>
-            </Button>
-        </CardFooter>
-      </div>
+        </div>
+      </CardHeader>
+      <CardContent className="flex-grow">
+        <div className="flex items-center text-sm text-muted-foreground mb-2">
+            <MapPin className="w-4 h-4 mr-1.5" />
+            {recommendation.location}
+        </div>
+        <p className="text-sm text-muted-foreground line-clamp-3">{recommendation.description}</p>
+      </CardContent>
+      <CardFooter className="mt-auto flex items-center justify-between p-4 bg-secondary/30">
+        <div>
+            <span className="text-muted-foreground text-sm">От </span>
+            <span className="font-bold text-xl">{recommendation.priceEstimate}</span>
+            <span className="text-muted-foreground text-sm"> / ночь</span>
+        </div>
+        <Button asChild>
+            <Link href={`/housing/${recommendation.slug}`}>Посмотреть</Link>
+        </Button>
+      </CardFooter>
     </Card>
   )
 }
 
 function LoadingSkeleton() {
   return (
-    <div className="space-y-6">
-      {[1, 2, 3].map((i) => (
-        <Card key={i} className="md:flex overflow-hidden">
-            <div className="md:w-2/5 relative">
-                <Skeleton className="h-full w-full aspect-video md:aspect-auto" />
-            </div>
-            <div className="md:w-3/5 flex flex-col">
-                <CardHeader>
-                    <Skeleton className="h-4 w-1/4" />
-                    <Skeleton className="h-7 w-3/4" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <Skeleton className="h-4 w-1/3" />
-                    <Skeleton className="h-12 w-full" />
-                </CardContent>
-                <CardFooter className="mt-auto flex items-center justify-between p-4 bg-secondary/30">
-                    <Skeleton className="h-8 w-1/3" />
-                    <Skeleton className="h-10 w-1/4" />
-                </CardFooter>
-            </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {[1, 2, 3, 4].map((i) => (
+        <Card key={i} className="overflow-hidden flex flex-col">
+            <Skeleton className="h-48 w-full" />
+            <CardHeader>
+                <div className="flex justify-between items-start">
+                    <div>
+                        <Skeleton className="h-4 w-20 mb-2" />
+                        <Skeleton className="h-6 w-48" />
+                    </div>
+                    <Skeleton className="h-8 w-16" />
+                </div>
+            </CardHeader>
+            <CardContent className="flex-grow">
+                <Skeleton className="h-4 w-32 mb-2" />
+                <Skeleton className="h-12 w-full" />
+            </CardContent>
+            <CardFooter className="mt-auto flex items-center justify-between p-4 bg-secondary/30">
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-10 w-28" />
+            </CardFooter>
         </Card>
       ))}
     </div>
@@ -373,20 +340,24 @@ export default function HousingPageContent() {
           {isLoading && <LoadingSkeleton />}
           
           {!isLoading && hasSearched && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-headline font-bold">Найдено {displayedRecommendations.length} вариантов</h2>
-              {displayedRecommendations.map((rec, index) => (
-                <HousingCard key={rec.slug} recommendation={rec} index={index} />
-              ))}
+            <div>
+              <h2 className="text-2xl font-headline font-bold mb-6">Найдено {displayedRecommendations.length} вариантов</h2>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {displayedRecommendations.map((rec, index) => (
+                  <HousingCard key={rec.slug} recommendation={rec} index={index} />
+                ))}
+              </div>
             </div>
           )}
 
           {!isLoading && !hasSearched && (
-              <div className="space-y-6">
-                  <h2 className="text-2xl font-headline font-bold">Популярные предложения</h2>
-                  {displayedRecommendations.map((rec, index) => (
-                      <HousingCard key={rec.slug} recommendation={rec} index={index} />
-                  ))}
+              <div>
+                  <h2 className="text-2xl font-headline font-bold mb-6">Популярные предложения</h2>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {displayedRecommendations.map((rec, index) => (
+                        <HousingCard key={rec.slug} recommendation={rec} index={index} />
+                    ))}
+                  </div>
               </div>
           )}
         </main>
