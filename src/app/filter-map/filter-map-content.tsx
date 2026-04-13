@@ -156,7 +156,7 @@ const MapComponent = ({ items, activeItem, onMarkerClick, selectedCategories }: 
                                 <Image src={activeItem.image} alt={activeItem.title} width={200} height={100} className="w-full h-24 object-cover rounded-md mb-2" />
                                 <h3 className="font-bold text-md mb-1">{activeItem.title}</h3>
                                 <p className="text-sm text-gray-600 mb-2">{activeItem.location}</p>
-                                <div className="text-lg font-bold text-indigo-600">{activeItem.price.toLocaleString()} ₽</div>
+                                <div className="text-lg font-bold text-indigo-600">{activeItem.price} ₽</div>
                             </div>
                         </InfoWindow>
                     )}
@@ -249,7 +249,7 @@ const ResultCard = ({ item, isActive, onClick, onHover }: {item: any, isActive: 
                 
                 <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div>
-                        <span className="text-2xl font-bold text-indigo-600">{item.price.toLocaleString()}</span>
+                        <span className="text-2xl font-bold text-indigo-600">{item.price}</span>
                         <span className="text-gray-400 text-sm"> ₽</span>
                         {item.category === 'accommodation' && <span className="text-gray-400 text-sm">/ночь</span>}
                         {item.category === 'cars' && <span className="text-gray-400 text-sm">/сутки</span>}
@@ -295,9 +295,9 @@ const FilterSection = ({ category, activeFilters, onFilterChange }: { category: 
                                 className="range-slider mb-2"
                             />
                             <div className="flex justify-between text-sm text-gray-500">
-                                <span>{field.min?.toLocaleString()} ₽</span>
+                                <span>{field.min} ₽</span>
                                 <span className="font-medium text-indigo-600">
-                                    До {(activeFilters[category]?.[field.key] || field.max).toLocaleString()} ₽
+                                    До {activeFilters[category]?.[field.key] || field.max} ₽
                                 </span>
                             </div>
                         </div>
