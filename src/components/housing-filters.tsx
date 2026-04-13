@@ -20,8 +20,8 @@ export function HousingFilters() {
           <h4 className="font-semibold mb-4">Цена за ночь</h4>
           <Slider defaultValue={[5000]} max={20000} step={500} />
           <div className="flex justify-between text-sm text-muted-foreground mt-2">
-            <span>₽0</span>
-            <span>₽20000+</span>
+            <span>BYN 0</span>
+            <span>BYN 20000+</span>
           </div>
         </div>
 

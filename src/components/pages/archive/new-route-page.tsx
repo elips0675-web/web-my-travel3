@@ -1,4 +1,3 @@
-
 'use client';
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,7 +40,7 @@ const categoryLabels: { [key: string]: string } = {
     'housing': 'Жилье',
     'restaurants': 'Кафе и рестораны',
     'activities': 'Развлечения',
-    'rental-car': 'Авто'
+    'rental-car': 'Транспорт'
 };
 
 export default function NewRoutePageContent() {

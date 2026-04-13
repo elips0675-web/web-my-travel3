@@ -1,4 +1,3 @@
-
 'use client';
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Search, Star, MapPin } from "lucide-react";
 import { aiRestaurantRecommendations, type AiRestaurantRecommendationsOutput } from '@/ai/flows/ai-restaurant-recommendations';
@@ -105,8 +103,8 @@ function RestaurantCard({ recommendation, index }: { recommendation: Recommendat
 function LoadingSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {Array.from({ length: 12 }).map((i) => (
-        <Card key={i} className="overflow-hidden flex flex-col rounded-2xl">
+      {Array.from({ length: 12 }).map((i, index) => (
+        <Card key={index} className="overflow-hidden flex flex-col rounded-2xl">
             <Skeleton className="h-48 w-full" />
             <CardHeader>
                 <Skeleton className="h-4 w-1/3" />

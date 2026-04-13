@@ -1,104 +1,23 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { type AiTourRecommendationsOutput } from '@/ai/flows/ai-tour-recommendations';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, MapPin, Check, Wifi, Wind, Tv, Utensils, ParkingCircle, ChevronLeft, Users, Minus, Plus, Clock, Info, CheckCircle, XCircle, Search } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Star, MapPin, CheckCircle, XCircle, ChevronLeft, Users, Clock, Search, Heart } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Label } from '../ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { cn } from '@/lib/utils';
-import { type DateRange } from 'react-day-picker';
 import { ImageLightbox } from '../image-lightbox';
+import ReviewsSection from '../reviews-section';
+import { BookingWidget } from '../booking-widget';
+
 
 type TourRecommendation = AiTourRecommendationsOutput[0] & { slug: string };
 
-function BookingWidget({ tour }: { tour: TourRecommendation }) {
-    const [adults, setAdults] = useState(1);
-    const [children, setChildren] = useState(0);
-    const [date, setDate] = useState<Date | undefined>();
-
-    return (
-        <Card className="sticky top-24 shadow-xl">
-            <CardHeader>
-                <div>
-                    <span className="text-muted-foreground text-sm">От </span>
-                    <span className="font-bold text-3xl">{tour.priceRange}</span>
-                    <span className="text-muted-foreground text-sm"> / чел.</span>
-                </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div>
-                    <Label className="font-semibold">Дата</Label>
-                     <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start font-normal mt-2">
-                               {date ? date.toLocaleDateString('ru-RU') : "Выберите дату"}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                            <Calendar
-                                mode="single"
-                                selected={date}
-                                onSelect={setDate}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
-                </div>
-                <Separator />
-                <div>
-                    <Label className="font-semibold mb-2 block">Участники</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start font-normal">
-                                {adults} взрослый, {children} ребенок
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <p className='font-medium'>Взрослые</p>
-                                        <p className='text-sm text-muted-foreground'>От 13 лет</p>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setAdults(v => Math.max(1, v - 1))}><Minus className="h-4 w-4" /></Button>
-                                        <span className="font-bold w-4 text-center">{adults}</span>
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setAdults(v => v + 1)}><Plus className="h-4 w-4" /></Button>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <p className='font-medium'>Дети</p>
-                                        <p className='text-sm text-muted-foreground'>До 12 лет</p>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setChildren(v => Math.max(0, v - 1))}><Minus className="h-4 w-4" /></Button>
-                                        <span className="font-bold w-4 text-center">{children}</span>
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setChildren(v => v + 1)}><Plus className="h-4 w-4" /></Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                </div>
-
-            </CardContent>
-            <CardFooter className="flex-col items-stretch gap-2">
-                <Button size="lg" className="w-full">Запросить бронирование</Button>
-                <p className="text-xs text-muted-foreground text-center">С вас пока не будет взиматься плата</p>
-            </CardFooter>
-        </Card>
-    );
-}
 
 function PageSkeleton() {
     return (
@@ -133,6 +52,8 @@ export default function TourDetailsPageContent({ slug }: { slug: string }) {
     const [isLoading, setIsLoading] = useState(true);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxStartIndex, setLightboxStartIndex] = useState(0);
+    const [isFavorite, setIsFavorite] = useState(false);
+
 
     useEffect(() => {
         const storedToursRaw = sessionStorage.getItem('tourRecommendations');
@@ -190,22 +111,35 @@ export default function TourDetailsPageContent({ slug }: { slug: string }) {
                 </Button>
                 
                 <header className="mb-8">
-                    <CardDescription className="text-sm font-semibold uppercase tracking-wider text-primary mb-2">{tour.type}</CardDescription>
-                    <h1 className="text-4xl font-extrabold font-headline tracking-tight mb-4">{tour.name}</h1>
-                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground">
-                        <div className="flex items-center gap-1 font-bold">
-                            <Star className="w-4 h-4 text-primary fill-primary" />
-                            <span>{rating.toFixed(1)}</span>
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                            <CardDescription className="text-sm font-semibold uppercase tracking-wider text-primary mb-2">{tour.type}</CardDescription>
+                            <h1 className="text-4xl font-extrabold font-headline tracking-tight mb-4">{tour.name}</h1>
+                            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground">
+                                <div className="flex items-center gap-1 font-bold">
+                                    <Star className="w-4 h-4 text-primary fill-primary" />
+                                    <span>{rating.toFixed(1)}</span>
+                                </div>
+                                <Separator orientation="vertical" className="h-4" />
+                                <div className="flex items-center gap-1.5">
+                                    <Clock className="w-4 h-4" />
+                                    <span>{tour.duration}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    <Users className="w-4 h-4" />
+                                    <span>{tour.groupSize}</span>
+                                </div>
+                            </div>
                         </div>
-                        <Separator orientation="vertical" className="h-4" />
-                        <div className="flex items-center gap-1.5">
-                            <Clock className="w-4 h-4" />
-                            <span>{tour.duration}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <Users className="w-4 h-4" />
-                            <span>{tour.groupSize}</span>
-                        </div>
+                         <Button
+                            size="lg"
+                            variant="outline"
+                            className="shrink-0"
+                            onClick={() => setIsFavorite(!isFavorite)}
+                        >
+                            <Heart className={cn("mr-2 h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
+                            {isFavorite ? 'В избранном' : 'В избранное'}
+                        </Button>
                     </div>
                 </header>
 
@@ -231,27 +165,31 @@ export default function TourDetailsPageContent({ slug }: { slug: string }) {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
                     <div className="lg:col-span-2">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="font-headline text-2xl">Основное</CardTitle>
-                            </CardHeader>
-                            <CardContent className="prose prose-stone dark:prose-invert max-w-none">
-                                <p>{tour.description}</p>
-                                
-                                <h3 className="font-semibold mt-6 mb-2">Ключевые моменты</h3>
-                                <ul className="list-disc pl-5 space-y-1">
-                                    {tour.highlights.map((highlight, i) => <li key={i}>{highlight}</li>)}
-                                </ul>
-                            </CardContent>
-                        </Card>
-                        <Tabs defaultValue="included" className="w-full mt-8">
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="included">Что включено</TabsTrigger>
-                                <TabsTrigger value="excluded">Что не включено</TabsTrigger>
+                       <Tabs defaultValue="overview" className="w-full">
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="overview">Обзор</TabsTrigger>
+                                <TabsTrigger value="program">Программа</TabsTrigger>
+                                <TabsTrigger value="reviews">Отзывы</TabsTrigger>
                             </TabsList>
-                            <TabsContent value="included">
+                            <TabsContent value="overview" className="pt-6">
                                 <Card>
-                                    <CardContent className="pt-6">
+                                    <CardHeader>
+                                        <CardTitle className="font-headline text-2xl">Основное</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="prose prose-stone dark:prose-invert max-w-none">
+                                        <p>{tour.description}</p>
+                                        
+                                        <h3 className="font-semibold mt-6 mb-2">Ключевые моменты</h3>
+                                        <ul className="list-disc pl-5 space-y-1">
+                                            {tour.highlights.map((highlight, i) => <li key={i}>{highlight}</li>)}
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                             <TabsContent value="program" className="pt-6">
+                                <Card>
+                                    <CardHeader><CardTitle>Что включено</CardTitle></CardHeader>
+                                    <CardContent>
                                         <ul className="space-y-3">
                                             {tour.included.map((item, i) => (
                                                 <li key={i} className="flex items-center gap-3">
@@ -262,10 +200,9 @@ export default function TourDetailsPageContent({ slug }: { slug: string }) {
                                         </ul>
                                     </CardContent>
                                 </Card>
-                            </TabsContent>
-                            <TabsContent value="excluded">
-                                <Card>
-                                    <CardContent className="pt-6">
+                                 <Card className="mt-4">
+                                    <CardHeader><CardTitle>Что не включено</CardTitle></CardHeader>
+                                    <CardContent>
                                         <ul className="space-y-3">
                                             {tour.excluded.map((item, i) => (
                                                 <li key={i} className="flex items-center gap-3">
@@ -277,11 +214,19 @@ export default function TourDetailsPageContent({ slug }: { slug: string }) {
                                     </CardContent>
                                 </Card>
                             </TabsContent>
+                            <TabsContent value="reviews" className="pt-6">
+                                <ReviewsSection />
+                            </TabsContent>
                         </Tabs>
                     </div>
 
                     <div className="row-start-1 lg:row-auto">
-                        <BookingWidget tour={tour} />
+                        <BookingWidget 
+                            price={tour.priceRange} 
+                            priceType="чел."
+                            showDatePicker="single"
+                            showGuests={true}
+                        />
                     </div>
                 </div>
             </div>

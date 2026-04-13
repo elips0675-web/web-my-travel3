@@ -1,4 +1,3 @@
-
 'use client';
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -111,8 +110,8 @@ function HousingCard({ recommendation, index }: { recommendation: Recommendation
 function LoadingSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      {Array.from({ length: 12 }).map((i) => (
-        <Card key={i} className="overflow-hidden flex flex-col rounded-2xl">
+      {Array.from({ length: 12 }).map((i, index) => (
+        <Card key={index} className="overflow-hidden flex flex-col rounded-2xl">
             <Skeleton className="h-48 w-full" />
             <CardHeader>
                 <Skeleton className="h-4 w-1/3" />
@@ -143,7 +142,7 @@ const baseMockHousingData: AiHousingRecommendationsOutput = {
         type: "Отель",
         location: "Санкт-Петербург, Россия",
         description: "Исторический пятизвездочный отель в самом центре города с роскошными номерами и безупречным сервисом.",
-        priceEstimate: "₽25000",
+        priceEstimate: "25000 BYN",
         rating: 5.0,
         pros: ["Идеальное расположение", "Историческая атмосфера", "Высококлассный сервис", "Спа-центр"],
         cons: ["Высокая цена"],
@@ -154,7 +153,7 @@ const baseMockHousingData: AiHousingRecommendationsOutput = {
         type: "Апартаменты",
         location: "Москва, Россия",
         description: "Современные апартаменты с панорамным видом на город в одной из башен комплекса «Москва-Сити».",
-        priceEstimate: "₽18000",
+        priceEstimate: "18000 BYN",
         rating: 4.8,
         pros: ["Панорамный вид на город", "Современный дизайн", "Высокий этаж"],
         cons: ["Может быть шумно"],
@@ -165,7 +164,7 @@ const baseMockHousingData: AiHousingRecommendationsOutput = {
         type: "Бутик-отель",
         location: "Вологда, Россия",
         description: "Уютный и тихий отель с уникальным дизайном, посвященным книгам и литературе. Идеально для спокойного отдыха.",
-        priceEstimate: "₽8000",
+        priceEstimate: "8000 BYN",
         rating: 4.9,
         pros: ["Уникальная концепция", "Тихое и спокойное место", "Собственная библиотека"],
         cons: ["Небольшой номерной фонд"],
@@ -176,7 +175,7 @@ const baseMockHousingData: AiHousingRecommendationsOutput = {
         type: "Отель",
         location: "Сочи, Россия",
         description: "Отель в горах с прекрасным видом, окруженный природой. Идеально для любителей активного отдыха.",
-        priceEstimate: "₽12000",
+        priceEstimate: "12000 BYN",
         rating: 4.7,
         pros: ["Горный воздух", "Доступ к подъемникам", "Экологичные материалы"],
         cons: ["Удаленность от моря"],

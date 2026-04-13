@@ -1,24 +1,20 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { type AiHousingRecommendationsOutput } from '@/ai/flows/ai-housing-recommendations-flow';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, MapPin, Check, Wifi, Wind, Tv, Utensils, ParkingCircle, ChevronLeft, Users, Minus, Plus, CalendarIcon, Search } from 'lucide-react';
+import { Star, MapPin, Check, Wifi, Wind, Tv, Utensils, ParkingCircle, ChevronLeft, Users, Minus, Plus, CalendarIcon, Search, Heart } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar } from '@/components/ui/calendar';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Label } from '../ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { cn } from '@/lib/utils';
-import { type DateRange } from 'react-day-picker';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
 import { ImageLightbox } from '../image-lightbox';
+import ReviewsSection from '../reviews-section';
+import { BookingWidget } from '../booking-widget';
+
 
 type HousingRecommendation = AiHousingRecommendationsOutput['recommendations'][0] & { slug: string };
 
@@ -29,108 +25,6 @@ const amenitiesMap = [
     { name: "Kitchen", icon: Utensils, keyword: 'kitchen' },
     { name: "Free Parking", icon: ParkingCircle, keyword: 'parking' },
 ];
-
-function BookingWidget({ recommendation }: { recommendation: HousingRecommendation }) {
-    const [adults, setAdults] = useState(2);
-    const [children, setChildren] = useState(0);
-    const [date, setDate] = useState<DateRange | undefined>();
-
-    return (
-        <Card className="sticky top-24 shadow-xl">
-            <CardHeader>
-                <div>
-                    <span className="text-muted-foreground text-sm">От </span>
-                    <span className="font-bold text-3xl">{recommendation.priceEstimate}</span>
-                    <span className="text-muted-foreground text-sm"> / ночь</span>
-                </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div>
-                    <Label className="font-semibold">Даты</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                                id="date"
-                                variant={"outline"}
-                                className={cn(
-                                "w-full justify-start text-left font-normal mt-2",
-                                !date && "text-muted-foreground"
-                                )}
-                            >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date?.from ? (
-                                    date.to ? (
-                                    <>
-                                        {format(date.from, "d LLL", { locale: ru })} -{" "}
-                                        {format(date.to, "d LLL, y", { locale: ru })}
-                                    </>
-                                    ) : (
-                                    format(date.from, "d LLL, y", { locale: ru })
-                                    )
-                                ) : (
-                                    <span>Выберите даты</span>
-                                )}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                                initialFocus
-                                mode="range"
-                                defaultMonth={date?.from}
-                                selected={date}
-                                onSelect={setDate}
-                                numberOfMonths={2}
-                                locale={ru}
-                            />
-                        </PopoverContent>
-                    </Popover>
-                </div>
-                <Separator />
-                <div>
-                    <Label className="font-semibold mb-2 block">Гости</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-full justify-start font-normal">
-                                {adults} взрослый, {children} ребенок
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <p className='font-medium'>Взрослые</p>
-                                        <p className='text-sm text-muted-foreground'>От 13 лет</p>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setAdults(v => Math.max(1, v - 1))}><Minus className="h-4 w-4" /></Button>
-                                        <span className="font-bold w-4 text-center">{adults}</span>
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setAdults(v => v + 1)}><Plus className="h-4 w-4" /></Button>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <p className='font-medium'>Дети</p>
-                                        <p className='text-sm text-muted-foreground'>До 12 лет</p>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setChildren(v => Math.max(0, v - 1))}><Minus className="h-4 w-4" /></Button>
-                                        <span className="font-bold w-4 text-center">{children}</span>
-                                        <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setChildren(v => v + 1)}><Plus className="h-4 w-4" /></Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </PopoverContent>
-                    </Popover>
-                </div>
-
-            </CardContent>
-            <CardFooter className="flex-col items-stretch gap-2">
-                <Button size="lg" className="w-full">Запросить бронирование</Button>
-                <p className="text-xs text-muted-foreground text-center">С вас пока не будет взиматься плата</p>
-            </CardFooter>
-        </Card>
-    );
-}
 
 function PageSkeleton() {
     return (
@@ -163,6 +57,7 @@ export default function HousingDetailsPageContent({ slug }: { slug: string }) {
     const [isLoading, setIsLoading] = useState(true);
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxStartIndex, setLightboxStartIndex] = useState(0);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
         const storedRecsRaw = sessionStorage.getItem('housingRecommendations');
@@ -221,19 +116,32 @@ export default function HousingDetailsPageContent({ slug }: { slug: string }) {
                 </Button>
                 
                 <header className="mb-8">
-                    <h1 className="text-4xl font-extrabold font-headline tracking-tight mb-2">{recommendation.name}</h1>
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-muted-foreground">
-                        {recommendation.rating && (
-                            <div className="flex items-center gap-1 font-bold">
-                                <Star className="w-4 h-4 text-primary fill-primary" />
-                                <span>{recommendation.rating.toFixed(1)}</span>
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div>
+                            <h1 className="text-4xl font-extrabold font-headline tracking-tight mb-2">{recommendation.name}</h1>
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-muted-foreground">
+                                {recommendation.rating && (
+                                    <div className="flex items-center gap-1 font-bold">
+                                        <Star className="w-4 h-4 text-primary fill-primary" />
+                                        <span>{recommendation.rating.toFixed(1)}</span>
+                                    </div>
+                                )}
+                                {recommendation.rating && <Separator orientation="vertical" className="h-4" />}
+                                <div className="flex items-center gap-1.5">
+                                    <MapPin className="w-4 h-4" />
+                                    <span>{recommendation.location}</span>
+                                </div>
                             </div>
-                        )}
-                        {recommendation.rating && <Separator orientation="vertical" className="h-4" />}
-                        <div className="flex items-center gap-1.5">
-                            <MapPin className="w-4 h-4" />
-                            <span>{recommendation.location}</span>
                         </div>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="shrink-0"
+                            onClick={() => setIsFavorite(!isFavorite)}
+                        >
+                            <Heart className={cn("mr-2 h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
+                            {isFavorite ? 'В избранном' : 'В избранное'}
+                        </Button>
                     </div>
                 </header>
 
@@ -285,14 +193,18 @@ export default function HousingDetailsPageContent({ slug }: { slug: string }) {
                                 </div>
                             </TabsContent>
                             <TabsContent value="reviews" className="pt-6">
-                                <h3 className="font-headline font-bold text-2xl mb-4">Отзывы гостей</h3>
-                                <p className="text-muted-foreground">Здесь скоро появятся отзывы.</p>
+                                <ReviewsSection />
                             </TabsContent>
                         </Tabs>
                     </div>
 
                     <div className="row-start-1 lg:row-auto">
-                        <BookingWidget recommendation={recommendation} />
+                        <BookingWidget 
+                            price={recommendation.priceEstimate || 'N/A'}
+                            priceType='ночь'
+                            showDatePicker='range'
+                            showGuests={true}
+                        />
                     </div>
                 </div>
             </div>
