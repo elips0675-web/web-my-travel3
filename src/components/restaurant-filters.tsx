@@ -8,7 +8,6 @@ import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const cuisineTypes = ["Итальянская", "Французская", "Японская", "Русская", "Азиатская", "Фаст-фуд"];
-const priceRanges = ["₽", "₽₽", "₽₽₽", "₽₽₽₽"];
 
 export function RestaurantFilters() {
   return (
@@ -30,14 +29,11 @@ export function RestaurantFilters() {
         </div>
 
         <div>
-          <h4 className="font-semibold mb-4">Ценовой диапазон</h4>
-          <div className="space-y-2">
-            {priceRanges.map((price) => (
-              <div key={price} className="flex items-center space-x-2">
-                <Checkbox id={`price-${price}`} />
-                <Label htmlFor={`price-${price}`} className="cursor-pointer font-normal">{price}</Label>
-              </div>
-            ))}
+          <h4 className="font-semibold mb-4">Средний чек</h4>
+          <Slider defaultValue={[150]} max={300} step={10} />
+          <div className="flex justify-between text-sm text-muted-foreground mt-2">
+            <span>0 BYN</span>
+            <span>300+ BYN</span>
           </div>
         </div>
 
@@ -51,7 +47,7 @@ export function RestaurantFilters() {
                   {Array(rating).fill(0).map((_, i) => (
                     <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
                   ))}
-                   <span className="text-sm text-muted-foreground ml-1">& выше</span>
+                   <span className="text-sm text-muted-foreground ml-1">и выше</span>
                 </Label>
               </div>
             ))}
