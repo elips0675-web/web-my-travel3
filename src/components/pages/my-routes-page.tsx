@@ -19,7 +19,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 
 import { cn } from "@/lib/utils";
-import { CalendarIcon, Search, MapPin, Star, ShieldCheck, Users, Briefcase, Award, Cog, DoorClosed, Home, Utensils, Gamepad2, Car, Luggage } from "lucide-react";
+import { CalendarIcon, Search, MapPin, Star, ShieldCheck, Users, Briefcase, Award, Cog, DoorClosed, Luggage, Home, Utensils, Gamepad2, Car } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { AiTourRecommendationsOutput } from "@/ai/flows/ai-tour-recommendations";
 import type { AiHousingRecommendationsOutput } from '@/ai/flows/ai-housing-recommendations-flow';
@@ -195,6 +195,10 @@ export default function MyRoutesPageContent() {
             
             <section className="py-16 lg:py-24">
                 <div className="container mx-auto px-4">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                        <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Популярное</h2>
+                        <p className="text-lg text-muted-foreground">Ознакомьтесь с нашими лучшими предложениями в различных категориях.</p>
+                    </div>
                     <div className="flex justify-center mb-12">
                         <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-4">
                            {categories.map(({ key, label, icon: Icon }) => {
@@ -218,10 +222,6 @@ export default function MyRoutesPageContent() {
                     <div>
                         {activeTab === 'tours' && (
                             <div>
-                                <div className="text-center max-w-2xl mx-auto mb-12">
-                                    <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Популярные туры</h2>
-                                    <p className="text-lg text-muted-foreground">Исследуйте Беларусь с нашими самыми популярными и высоко оцененными турами.</p>
-                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                     {popularTours.map((tour, index) => (
                                         <Link href={`/tours/${tour.slug}`} key={index} className="group flex flex-col">
@@ -253,10 +253,6 @@ export default function MyRoutesPageContent() {
                         )}
                         {activeTab === 'housing' && (
                             <div>
-                                <div className="text-center max-w-2xl mx-auto mb-12">
-                                    <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Популярное жилье</h2>
-                                    <p className="text-lg text-muted-foreground">Найдите идеальное место для вашего отдыха из наших лучших предложений.</p>
-                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                     {popularHousing.map((rec, index) => (
                                         <Link href={`/housing/${rec.slug}`} key={index} className="group flex flex-col">
@@ -289,10 +285,6 @@ export default function MyRoutesPageContent() {
                         )}
                         {activeTab === 'restaurants' && (
                              <div>
-                                <div className="text-center max-w-2xl mx-auto mb-12">
-                                    <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Популярные рестораны</h2>
-                                    <p className="text-lg text-muted-foreground">Откройте для себя лучшие рестораны, которые мы отобрали для вас.</p>
-                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {popularRestaurants.map((rec, index) => (
                                         <Link href={`/restaurants/${rec.slug}`} key={index} className="group flex flex-col">
@@ -318,10 +310,6 @@ export default function MyRoutesPageContent() {
                         )}
                         {activeTab === 'activities' && (
                             <div>
-                                <div className="text-center max-w-2xl mx-auto mb-12">
-                                    <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Популярные развлечения</h2>
-                                    <p className="text-lg text-muted-foreground">Найдите интересные занятия и развлечения на любой вкус.</p>
-                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                     {popularActivities.map((rec, index) => (
                                         <Link href={`/activities/${rec.slug}`} key={index} className="group flex flex-col">
@@ -346,10 +334,6 @@ export default function MyRoutesPageContent() {
                         )}
                         {activeTab === 'rental-car' && (
                             <div>
-                                <div className="text-center max-w-2xl mx-auto mb-12">
-                                    <h2 className="text-4xl md:text-5xl font-bold font-headline mb-4">Популярный транспорт</h2>
-                                    <p className="text-lg text-muted-foreground">Выберите лучший транспорт для вашего путешествия по выгодной цене.</p>
-                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                     {popularCars.map((car, index) => (
                                         <Link href={`/rental-car/${car.slug}`} key={index} className="group flex flex-col">
