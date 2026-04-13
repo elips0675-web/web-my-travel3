@@ -16,8 +16,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { CalendarIcon, Search, MapPin, BedDouble } from "lucide-react";
+import { CalendarIcon, Search, MapPin, BedDouble, Star } from "lucide-react";
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Badge } from "@/components/ui/badge";
 
 // Schema for Tour Search
 const tourSearchSchema = z.object({
@@ -170,20 +171,40 @@ export default function MyRoutesPageContent() {
     
     const activities = [
         {
-            title: "Морские прогулки",
+            title: "Морские прогулки на яхте",
+            location: "Сочи, Россия",
             image: PlaceHolderImages.find(img => img.id === 'activity-sailing'),
+            rating: 4.9,
+            reviews: 89,
+            price: 5500,
+            isTopRated: true,
         },
         {
-            title: "Треккинг в горах",
+            title: "Поход к Агурским водопадам",
+            location: "Сочи, Россия",
             image: PlaceHolderImages.find(img => img.id === 'activity-hiking'),
+            rating: 4.8,
+            reviews: 124,
+            price: 2500,
+            isTopRated: false,
         },
         {
-            title: "Кулинарные курсы",
+            title: "Мастер-класс по хинкали",
+            location: "Тбилиси, Грузия",
             image: PlaceHolderImages.find(img => img.id === 'activity-cooking'),
+            rating: 4.9,
+            reviews: 215,
+            price: 4000,
+            isTopRated: true,
         },
         {
-            title: "Посещение музеев",
+            title: "Экскурсия в Лувр",
+            location: "Париж, Франция",
             image: PlaceHolderImages.find(img => img.id === 'activity-museum'),
+            rating: 4.7,
+            reviews: 1503,
+            price: 6000,
+            isTopRated: false,
         }
     ];
     
@@ -262,24 +283,48 @@ export default function MyRoutesPageContent() {
             
             <section className="py-12 lg:py-20">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-bold text-center font-headline mb-10">Популярные развлечения</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <h2 className="text-3xl md:text-4xl font-bold text-center font-headline mb-12">В тренде сейчас</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
                         {activities.map((activity, index) => (
-                            <Card key={index} className="overflow-hidden group shadow-lg hover:shadow-xl transition-shadow duration-300">
-                                <div className="relative h-64">
-                                    <Image
-                                        src={activity.image?.imageUrl || `https://picsum.photos/seed/${activity.title}/600/400`}
-                                        alt={activity.image?.description || activity.title}
-                                        fill
-                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                        data-ai-hint={activity.image?.imageHint || activity.title.toLowerCase().replace(' ', '')}
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                                     <div className="absolute bottom-0 left-0 p-4">
-                                        <h3 className="font-bold font-headline text-lg text-white">{activity.title}</h3>
+                            <div key={index} className="group">
+                                <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg relative">
+                                    <div className="relative h-64">
+                                        <Image
+                                            src={activity.image?.imageUrl || `https://picsum.photos/seed/${activity.title}/600/400`}
+                                            alt={activity.image?.description || activity.title}
+                                            fill
+                                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                            data-ai-hint={activity.image?.imageHint || activity.title.toLowerCase().replace(' ', '')}
+                                        />
+                                        {activity.isTopRated && (
+                                            <Badge className="absolute top-4 left-4 border-none bg-primary text-primary-foreground">Топ</Badge>
+                                        )}
+                                        <div className="absolute top-4 right-4 flex items-center gap-1 text-sm font-bold text-white bg-black/50 px-2 py-1 rounded-md">
+                                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                                            <span>{activity.rating.toFixed(1)}</span>
+                                        </div>
+                                    </div>
+                                </Card>
+                                <div className="pt-4">
+                                     <div className="flex items-center text-sm text-muted-foreground mb-1">
+                                        <MapPin className="w-4 h-4 mr-1" />
+                                        {activity.location}
+                                    </div>
+                                    <h3 className="font-bold font-headline text-xl mb-1 text-foreground truncate group-hover:text-primary transition-colors">{activity.title}</h3>
+                                    <div className="flex items-center text-sm text-muted-foreground mb-2 gap-1">
+                                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                        <span className="font-bold text-foreground">{activity.rating}</span>
+                                        <span>({activity.reviews} отзывов)</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                         <p className="text-lg font-bold text-foreground">
+                                            <span className="text-sm font-normal text-muted-foreground">от </span>
+                                            {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0 }).format(activity.price)}
+                                        </p>
+                                        <Button size="sm" variant="ghost" className="text-primary hover:bg-primary/10">Подробнее</Button>
                                     </div>
                                 </div>
-                            </Card>
+                            </div>
                         ))}
                     </div>
                 </div>
