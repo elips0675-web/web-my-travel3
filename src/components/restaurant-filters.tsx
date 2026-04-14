@@ -8,6 +8,7 @@ import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const cuisineTypes = ["Итальянская", "Французская", "Японская", "Русская", "Азиатская", "Фаст-фуд"];
+const features = ["Веранда", "Живая музыка", "Панорамный вид", "Для детей"];
 
 export function RestaurantFilters() {
   return (
@@ -23,6 +24,18 @@ export function RestaurantFilters() {
               <div key={type} className="flex items-center space-x-2">
                 <Checkbox id={`cuisine-${type}`} />
                 <Label htmlFor={`cuisine-${type}`} className="cursor-pointer font-normal">{type}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold mb-4">Особенности</h4>
+          <div className="space-y-2">
+            {features.map((feature) => (
+              <div key={feature} className="flex items-center space-x-2">
+                <Checkbox id={`feature-${feature}`} />
+                <Label htmlFor={`feature-${feature}`} className="cursor-pointer font-normal">{feature}</Label>
               </div>
             ))}
           </div>

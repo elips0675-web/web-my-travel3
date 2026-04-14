@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 const transportCategories = ["Каршеринг", "Такси", "Велосипеды", "Самокаты"];
 const carTypes = ["Компакт", "Эконом", "Седан", "SUV", "Премиум"];
 const transmissionTypes = ["Автомат", "Механика"];
+const seatOptions = ["2-4 места", "5 мест", "7+ мест"];
 
 export function RentalCarFilters() {
   return (
@@ -28,6 +29,18 @@ export function RentalCarFilters() {
             ))}
           </div>
         </div>
+
+        <div>
+          <h4 className="font-semibold mb-4">Класс автомобиля</h4>
+          <div className="space-y-2">
+            {carTypes.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <Checkbox id={`car-type-${type}`} />
+                <Label htmlFor={`car-type-${type}`} className="cursor-pointer font-normal">{type}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
         
         <div>
           <h4 className="font-semibold mb-4">Коробка передач</h4>
@@ -37,6 +50,18 @@ export function RentalCarFilters() {
                 <Checkbox id={`transmission-${type}`} />
                 <Label htmlFor={`transmission-${type}`} className="cursor-pointer font-normal">{type}</Label>
               </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold mb-4">Количество мест</h4>
+          <div className="space-y-2">
+            {seatOptions.map((seats) => (
+                <div key={seats} className="flex items-center space-x-2">
+                <Checkbox id={`seats-${seats}`} />
+                <Label htmlFor={`seats-${seats}`} className="cursor-pointer font-normal">{seats}</Label>
+                </div>
             ))}
           </div>
         </div>

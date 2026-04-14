@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const tourCategories = ["Приключение", "Культура", "Еда", "Для всей семьи", "Обзорная"];
+const tourTypes = ["Приключение", "Культура", "Еда", "Для всей семьи", "Обзорная"];
 const tourDurations = ["До 4 часов", "1 день", "2-3 дня", "Более 3 дней"];
+const groupSizes = ["Индивидуальный", "Малая группа (до 15)", "Большая группа (15+)"];
 
 export function TourFilters() {
   return (
@@ -18,9 +19,9 @@ export function TourFilters() {
       </CardHeader>
       <CardContent className="space-y-8">
         <div>
-          <h4 className="font-semibold mb-4">Категории</h4>
+          <h4 className="font-semibold mb-4">Тип тура</h4>
           <div className="space-y-2">
-            {tourCategories.map((category) => (
+            {tourTypes.map((category) => (
               <div key={category} className="flex items-center space-x-2">
                 <Checkbox id={`category-${category}`} />
                 <Label htmlFor={`category-${category}`} className="cursor-pointer font-normal">{category}</Label>
@@ -53,6 +54,18 @@ export function TourFilters() {
               <div key={duration} className="flex items-center space-x-2">
                 <Checkbox id={`duration-${duration}`} />
                 <Label htmlFor={`duration-${duration}`} className="cursor-pointer font-normal">{duration}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold mb-4">Размер группы</h4>
+          <div className="space-y-2">
+            {groupSizes.map((size) => (
+              <div key={size} className="flex items-center space-x-2">
+                <Checkbox id={`size-${size}`} />
+                <Label htmlFor={`size-${size}`} className="cursor-pointer font-normal">{size}</Label>
               </div>
             ))}
           </div>

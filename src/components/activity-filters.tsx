@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 
 const activityTypes = ["VR", "Квест", "Боулинг", "Картинг", "Настольные игры", "Для детей", "Рыбалка"];
 const audienceTypes = ["Для двоих", "Для компании", "Для семьи"];
+const locationTypes = ["В помещении", "На открытом воздухе"];
 
 export function ActivityFilters() {
   return (
@@ -35,6 +36,18 @@ export function ActivityFilters() {
               <div key={type} className="flex items-center space-x-2">
                 <Checkbox id={`audience-${type}`} />
                 <Label htmlFor={`audience-${type}`} className="cursor-pointer font-normal">{type}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold mb-4">Место проведения</h4>
+          <div className="space-y-2">
+            {locationTypes.map((type) => (
+              <div key={type} className="flex items-center space-x-2">
+                <Checkbox id={`location-${type}`} />
+                <Label htmlFor={`location-${type}`} className="cursor-pointer font-normal">{type}</Label>
               </div>
             ))}
           </div>

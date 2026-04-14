@@ -8,6 +8,7 @@ import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const accommodationTypes = ["Отель", "Апартаменты", "Хостел", "Гостевой дом", "Агротуризм"];
+const amenities = ["Wi-Fi", "Бассейн", "Парковка", "Кондиционер", "Кухня", "Для животных"];
 
 export function HousingFilters() {
   return (
@@ -51,6 +52,18 @@ export function HousingFilters() {
               <div key={type} className="flex items-center space-x-2">
                 <Checkbox id={`type-${type}`} />
                 <Label htmlFor={`type-${type}`} className="cursor-pointer font-normal">{type}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold mb-4">Удобства</h4>
+          <div className="space-y-2">
+            {amenities.map((amenity) => (
+              <div key={amenity} className="flex items-center space-x-2">
+                <Checkbox id={`amenity-${amenity}`} />
+                <Label htmlFor={`amenity-${amenity}`} className="cursor-pointer font-normal">{amenity}</Label>
               </div>
             ))}
           </div>

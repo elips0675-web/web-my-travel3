@@ -35,7 +35,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-type RecommendationWithSlug = AiRestaurantRecommendationsOutput['recommendations'][0] & { slug: string };
+type RecommendationWithSlug = AiRestaurantRecommendationsOutput['recommendations'][0] & { slug: string; features?: string[]; };
 
 const formSchema = z.object({
   destination: z.string().min(2, { message: "Пункт назначения должен содержать не менее 2 символов." }),
@@ -84,12 +84,19 @@ function RestaurantCard({ recommendation, index }: { recommendation: Recommendat
             <MapPin className="w-4 h-4 mr-1.5" />
             {recommendation.location}
         </div>
-        <p className="text-sm text-muted-foreground mb-3 flex-grow line-clamp-2">{recommendation.description}</p>
-        {recommendation.specialty && (
-            <span className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-xs w-fit">
-                {recommendation.specialty}
-            </span>
-        )}
+        <p className="text-sm text-muted-foreground mb-4 flex-grow line-clamp-2">{recommendation.description}</p>
+        <div className="flex flex-wrap gap-2">
+            {recommendation.specialty && (
+                <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded-md text-xs font-semibold">
+                    {recommendation.specialty}
+                </span>
+            )}
+            {recommendation.features?.slice(0, 2).map((feature, i) => (
+                <span key={i} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-xs">
+                    {feature}
+                </span>
+            ))}
+        </div>
       </CardContent>
        <CardFooter className="flex items-center justify-between pt-3 border-t mt-auto">
             <div className="text-2xl font-bold text-primary">{recommendation.price}</div>
@@ -104,8 +111,8 @@ function RestaurantCard({ recommendation, index }: { recommendation: Recommendat
 function LoadingSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {Array.from({ length: 12 }).map((i) => (
-        <Card key={i} className="overflow-hidden flex flex-col rounded-2xl">
+      {Array.from({ length: 12 }).map((i, index) => (
+        <Card key={index} className="overflow-hidden flex flex-col rounded-2xl">
             <Skeleton className="h-48 w-full" />
             <CardHeader>
                 <Skeleton className="h-4 w-1/3" />
@@ -126,26 +133,26 @@ function LoadingSkeleton() {
   )
 }
 
-const baseMockRestaurantData: AiRestaurantRecommendationsOutput = {
+const baseMockRestaurantData: any = {
     recommendations: [
-      { name: "White Rabbit", cuisine: "Современная русская", location: "Смоленская пл., 3, Москва", description: "Панорамный ресторан с видом на Москву, известный своей инновационной русской кухней.", price: "от 250 BYN", rating: 4.8, specialty: "Борщ с жареными карасями", imageUrl: "https://picsum.photos/seed/whiterabbit/800/600" },
-      { name: "Probka на Цветном", cuisine: "Итальянская", location: "Цветной б-р, 2, Москва", description: "Уютный итальянский ресторан от Арама Мнацаканова с аутентичной кухней и отличной винной картой.", price: "от 150 BYN", rating: 4.7, specialty: "Пицца с трюфелем", imageUrl: "https://picsum.photos/seed/probka/800/600" },
-      { name: "Кафе Пушкинъ", cuisine: "Русская дворянская", location: "Тверской б-р, 26А, Москва", description: "Легендарный ресторан-аптека с атмосферой XIX века и классической русской кухней.", price: "от 200 BYN", rating: 4.6, specialty: "Пожарская котлета", imageUrl: "https://picsum.photos/seed/pushkin/800/600" },
-      { name: "Горыныч", cuisine: "Гриль", location: "Рождественский б-р, 1, Москва", description: "Ресторан с огромными печами, где готовят блюда на огне. Отличные завтраки и хлеб из собственной пекарни.", price: "от 120 BYN", rating: 4.7, specialty: "Стейки и неаполитанская пицца", imageUrl: "https://picsum.photos/seed/gorynych/800/600" },
-      { name: "Sehnsucht", cuisine: "Европейская", location: "Казанская ул., 3А, Санкт-Петербург", description: "Стильный ресторан с авторской кухней и коктейлями в самом центре Петербурга.", price: "от 100 BYN", rating: 4.8, specialty: "Тартар из говядины", imageUrl: "https://picsum.photos/seed/sehnsucht/800/600" },
-      { name: "Harvest", cuisine: "Овощная", location: "пр. Добролюбова, 11, Санкт-Петербург", description: "Инновационный ресторан, где овощи играют главную роль. Входит в The World's 50 Best Restaurants.", price: "от 220 BYN", rating: 4.9, specialty: "Капуста с черной икрой", imageUrl: "https://picsum.photos/seed/harvest/800/600" },
+      { name: "White Rabbit", cuisine: "Современная русская", location: "Смоленская пл., 3, Москва", description: "Панорамный ресторан с видом на Москву, известный своей инновационной русской кухней.", price: "от 250 BYN", rating: 4.8, specialty: "Борщ с карасями", features: ["Панорамный вид", "Авторская кухня"], imageUrl: "https://picsum.photos/seed/whiterabbit/800/600" },
+      { name: "Probka на Цветном", cuisine: "Итальянская", location: "Цветной б-р, 2, Москва", description: "Уютный итальянский ресторан от Арама Мнацаканова с аутентичной кухней и отличной винной картой.", price: "от 150 BYN", rating: 4.7, specialty: "Пицца с трюфелем", features: ["Веранда", "Винная карта"], imageUrl: "https://picsum.photos/seed/probka/800/600" },
+      { name: "Кафе Пушкинъ", cuisine: "Русская дворянская", location: "Тверской б-р, 26А, Москва", description: "Легендарный ресторан-аптека с атмосферой XIX века и классической русской кухней.", price: "от 200 BYN", rating: 4.6, specialty: "Пожарская котлета", features: ["Живая музыка", "Исторический интерьер"], imageUrl: "https://picsum.photos/seed/pushkin/800/600" },
+      { name: "Горыныч", cuisine: "Гриль", location: "Рождественский б-р, 1, Москва", description: "Ресторан с огромными печами, где готовят блюда на огне. Отличные завтраки и хлеб из собственной пекарни.", price: "от 120 BYN", rating: 4.7, specialty: "Стейки", features: ["Открытая кухня", "Завтраки"], imageUrl: "https://picsum.photos/seed/gorynych/800/600" },
+      { name: "Sehnsucht", cuisine: "Европейская", location: "Казанская ул., 3А, Санкт-Петербург", description: "Стильный ресторан с авторской кухней и коктейлями в самом центре Петербурга.", price: "от 100 BYN", rating: 4.8, specialty: "Тартар из говядины", features: ["Авторские коктейли", "Для свиданий"], imageUrl: "https://picsum.photos/seed/sehnsucht/800/600" },
+      { name: "Harvest", cuisine: "Овощная", location: "пр. Добролюбова, 11, Санкт-Петербург", description: "Инновационный ресторан, где овощи играют главную роль. Входит в The World's 50 Best Restaurants.", price: "от 220 BYN", rating: 4.9, specialty: "Капуста с икрой", features: ["Fine dining", "Здоровое питание"], imageUrl: "https://picsum.photos/seed/harvest/800/600" },
     ],
 };
 
-const mockRestaurantData: AiRestaurantRecommendationsOutput = {
-    recommendations: Array.from({ length: 4 }).flatMap(() => baseMockRestaurantData.recommendations).map((rec, index) => ({
+const mockRestaurantData: any = {
+    recommendations: Array.from({ length: 4 }).flatMap(() => baseMockRestaurantData.recommendations).map((rec: any, index: number) => ({
         ...rec,
         name: `${rec.name} ${Math.floor(index/baseMockRestaurantData.recommendations.length) + 1}`,
         imageUrl: rec.imageUrl?.replace('/seed/', `/seed/${index}-`)
     }))
 };
 
-const mockRestaurantDataWithSlugs = mockRestaurantData.recommendations.map((rec, index) => ({
+const mockRestaurantDataWithSlugs = mockRestaurantData.recommendations.map((rec: any, index: number) => ({
     ...rec,
     slug: generateSlug(rec.name, index)
 }));
@@ -184,7 +191,7 @@ export default function RestaurantsPageContent() {
             preferences: values.preferences,
         });
 
-        const recommendationsWithSlugs = result.recommendations.map((rec, index) => ({
+        const recommendationsWithSlugs: RecommendationWithSlug[] = result.recommendations.map((rec, index) => ({
             ...rec,
             slug: generateSlug(rec.name, index)
         }));

@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Search, Star, MapPin } from "lucide-react";
+import { Loader2, Search, Star, MapPin, Clock, Users } from "lucide-react";
 import { type AiActivityRecommendationsOutput } from '@/ai/flows/ai-activity-recommendations';
 import { Textarea } from "@/components/ui/textarea";
 import { ActivityFilters } from "@/components/activity-filters";
@@ -34,7 +34,7 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-type RecommendationWithSlug = AiActivityRecommendationsOutput['recommendations'][0] & { slug: string };
+type RecommendationWithSlug = AiActivityRecommendationsOutput['recommendations'][0] & { slug: string; duration?: string; ageGroup?: string; };
 
 const formSchema = z.object({
   destination: z.string().min(2, { message: "Пункт назначения должен содержать не менее 2 символов." }),
@@ -87,12 +87,16 @@ function ActivityCard({ recommendation, index }: { recommendation: Recommendatio
         <CardDescription>{recommendation.type}</CardDescription>
         <CardTitle className="font-bold text-lg mb-0 group-hover:text-primary transition-colors">{recommendation.name}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-grow flex flex-col">
         <div className="flex items-center text-sm text-muted-foreground mb-3">
             <MapPin className="w-4 h-4 mr-1.5" />
             {recommendation.location}
         </div>
-        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{recommendation.description}</p>
+        <p className="text-sm text-muted-foreground mb-4 flex-grow line-clamp-2">{recommendation.description}</p>
+        <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            {recommendation.duration && <div className="flex items-center gap-1.5"><Clock className="w-4 h-4" /><span>{recommendation.duration}</span></div>}
+            {recommendation.ageGroup && <div className="flex items-center gap-1.5"><Users className="w-4 h-4" /><span>{recommendation.ageGroup}</span></div>}
+        </div>
       </CardContent>
        <CardFooter className="flex items-center justify-between pt-3 border-t mt-auto">
             <div>
@@ -133,16 +137,16 @@ function LoadingSkeleton() {
 
 const baseMockActivityData: AiActivityRecommendationsOutput = {
     recommendations: [
-      { name: "VR-арена Warpoint", type: "VR-арена", description: "Командный VR-шутер на большой арене. Почувствуй себя героем боевика!", price: "от 30 BYN/час", location: "пр-т Победителей, 9, Минск", rating: 4.9, imageUrl: "https://picsum.photos/seed/vr-warpoint/800/600" },
-      { name: "Квест «Пила»", type: "Квест", description: "Хоррор-квест по мотивам знаменитого фильма. Сможете ли вы выбраться из ловушки Конструктора?", price: "от 100 BYN за команду", location: "ул. Куйбышева, 22, Минск", rating: 4.8, imageUrl: "https://picsum.photos/seed/saw-quest/800/600" },
-      { name: "Боулинг-клуб Madison", type: "Боулинг", description: "Современный боулинг-центр с 12 дорожками, баром и рестораном. Отличное место для компании.", price: "от 45 BYN/час", location: "ул. Тимирязева, 9, Минск", rating: 4.6, imageUrl: "https://picsum.photos/seed/bowling-madison/800/600" },
-      { name: "Картинг-центр «Форсаж»", type: "Картинг", description: "Одна из лучших крытых картинг-трасс в Минске. Скорость, адреналин и дух соперничества.", price: "от 35 BYN за заезд", location: "пр-т Дзержинского, 91, Минск", rating: 4.7, imageUrl: "https://picsum.photos/seed/karting-forsazh/800/600" },
-      { name: "Парк активного отдыха «0.67»", type: "Активный отдых", description: "Пейнтбол, лазертаг, веревочный городок и беседки для отдыха на природе.", price: "от 40 BYN с человека", location: "Минский район, д. Комарово", rating: 4.8, imageUrl: "https://picsum.photos/seed/park-067/800/600" },
-      { name: "Аквапарк «Лебяжий»", type: "Аквапарк", description: "Крупнейший аквапарк в Беларуси с множеством горок, бассейнов и спа-зоной.", price: "от 55 BYN за 4 часа", location: "пр-т Победителей, 120, Минск", rating: 4.5, imageUrl: "https://picsum.photos/seed/aquapark-lebyazhiy/800/600" },
+      { name: "VR-арена Warpoint", type: "VR-арена", description: "Командный VR-шутер на большой арене. Почувствуй себя героем боевика!", price: "от 30 BYN/час", location: "пр-т Победителей, 9, Минск", rating: 4.9, duration: "1 час", ageGroup: "12+", imageUrl: "https://picsum.photos/seed/vr-warpoint/800/600" },
+      { name: "Квест «Пила»", type: "Квест", description: "Хоррор-квест по мотивам знаменитого фильма. Сможете ли вы выбраться из ловушки Конструктора?", price: "от 100 BYN за команду", location: "ул. Куйбышева, 22, Минск", rating: 4.8, duration: "1.5 часа", ageGroup: "18+", imageUrl: "https://picsum.photos/seed/saw-quest/800/600" },
+      { name: "Боулинг-клуб Madison", type: "Боулинг", description: "Современный боулинг-центр с 12 дорожками, баром и рестораном. Отличное место для компании.", price: "от 45 BYN/час", location: "ул. Тимирязева, 9, Минск", rating: 4.6, duration: "Почасовая", ageGroup: "Для всех", imageUrl: "https://picsum.photos/seed/bowling-madison/800/600" },
+      { name: "Картинг-центр «Форсаж»", type: "Картинг", description: "Одна из лучших крытых картинг-трасс в Минске. Скорость, адреналин и дух соперничества.", price: "от 35 BYN за заезд", location: "пр-т Дзержинского, 91, Минск", rating: 4.7, duration: "10-15 мин", ageGroup: "От 7 лет", imageUrl: "https://picsum.photos/seed/karting-forsazh/800/600" },
+      { name: "Парк активного отдыха «0.67»", type: "Активный отдых", description: "Пейнтбол, лазертаг, веревочный городок и беседки для отдыха на природе.", price: "от 40 BYN с человека", location: "Минский район, д. Комарово", rating: 4.8, duration: "2-3 часа", ageGroup: "От 10 лет", imageUrl: "https://picsum.photos/seed/park-067/800/600" },
+      { name: "Аквапарк «Лебяжий»", type: "Аквапарк", description: "Крупнейший аквапарк в Беларуси с множеством горок, бассейнов и спа-зоной.", price: "от 55 BYN за 4 часа", location: "пр-т Победителей, 120, Минск", rating: 4.5, duration: "4 часа / Весь день", ageGroup: "Для всех", imageUrl: "https://picsum.photos/seed/aquapark-lebyazhiy/800/600" },
     ],
 };
 
-const mockActivityData: AiActivityRecommendationsOutput = {
+const mockActivityData: any = {
     recommendations: Array.from({ length: 4 }).flatMap(() => baseMockActivityData.recommendations).map((rec, index) => ({
         ...rec,
         name: `${rec.name} ${Math.floor(index/baseMockActivityData.recommendations.length) + 1}`,
@@ -150,7 +154,7 @@ const mockActivityData: AiActivityRecommendationsOutput = {
     }))
 };
 
-const mockActivityDataWithSlugs = mockActivityData.recommendations.map((rec, index) => ({
+const mockActivityDataWithSlugs = mockActivityData.recommendations.map((rec: any, index: number) => ({
     ...rec,
     slug: generateSlug(rec.name, index)
 }));
