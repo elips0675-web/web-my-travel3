@@ -194,7 +194,7 @@ export default function HousingDetailsPageContent({ slug }: { slug: string }) {
                                     {amenitiesMap.map((amenity) => {
                                         const isAvailable = recommendation.pros.some(pro => pro.toLowerCase().includes(amenity.keyword)) || recommendation.description.toLowerCase().includes(amenity.keyword);
                                         return (
-                                            <div key={amenity.name} className={cn("flex items-center gap-2", !isAvailable && "text-muted-foreground line-through")}>
+                                            <div key={amenity.name} className={cn("flex items-center gap-2", !isAvailable && "text-muted-foreground")}>
                                                 <amenity.icon className="w-5 h-5" />
                                                 <span>{amenity.name}</span>
                                             </div>
