@@ -23,7 +23,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { CalendarIcon, Loader2, Search, Star, MapPin, Award } from "lucide-react";
+import { CalendarIcon, Loader2, Search, Star, MapPin, Award, Heart } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from 'date-fns/locale';
 import { aiHousingRecommendations, type AiHousingRecommendationsOutput } from '@/ai/flows/ai-housing-recommendations-flow';
@@ -51,6 +51,8 @@ const formSchema = z.object({
 });
 
 function HousingCard({ recommendation, index }: { recommendation: RecommendationWithSlug, index: number }) {
+  const [isFavorite, setIsFavorite] = useState(false);
+
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-xl flex flex-col rounded-2xl">
       <div className="relative h-48 overflow-hidden">
@@ -61,14 +63,18 @@ function HousingCard({ recommendation, index }: { recommendation: Recommendation
           className="object-cover group-hover:scale-110 transition-transform duration-500"
           data-ai-hint={`${recommendation.type.toLowerCase()} interior`}
         />
-        <div className="absolute top-3 right-3 bg-card/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
-            {recommendation.rating && (
-                <>
-                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                    <span className="font-semibold text-card-foreground">{recommendation.rating.toFixed(1)}</span>
-                </>
-            )}
-        </div>
+        <Button
+            size="icon"
+            variant="secondary"
+            className="absolute top-3 right-3 bg-white/80 backdrop-blur rounded-full text-black/70 hover:text-red-500 hover:bg-white transition-colors shadow"
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsFavorite(!isFavorite);
+            }}
+        >
+            <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
+        </Button>
         {recommendation.rating && recommendation.rating >= 4.8 && (
             <div className="absolute top-3 left-3 flex items-center gap-1.5 text-sm font-bold text-white bg-primary px-2 py-1 rounded-full">
                 <Award className="w-4 h-4" />

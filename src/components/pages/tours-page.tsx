@@ -207,8 +207,8 @@ function TourCard({ tour, index }: { tour: TourRecommendationWithSlug, index: nu
                 />
                  <Button
                     size="icon"
-                    variant="ghost"
-                    className="absolute top-3 left-3 bg-black/20 backdrop-blur-sm rounded-full text-white hover:text-red-500 hover:bg-black/30 transition-colors"
+                    variant="secondary"
+                    className="absolute top-3 right-3 bg-white/80 backdrop-blur rounded-full text-black/70 hover:text-red-500 hover:bg-white transition-colors shadow"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -217,13 +217,11 @@ function TourCard({ tour, index }: { tour: TourRecommendationWithSlug, index: nu
                 >
                     <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
                 </Button>
-                <div className="absolute top-3 right-3 bg-card/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
-                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                    <span className="font-semibold text-card-foreground">{rating.toFixed(1)}</span>
+                <div className="absolute bottom-0 left-0 bg-gradient-to-t from-black/70 to-transparent w-full p-4">
+                     <p className="text-xs font-semibold text-white/90 uppercase tracking-wider">{tour.type}</p>
                 </div>
             </div>
             <CardHeader>
-                <CardDescription>{tour.type}</CardDescription>
                 <CardTitle className="font-bold text-lg mb-0 group-hover:text-primary transition-colors">{tour.name}</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col flex-grow">
@@ -243,6 +241,10 @@ function TourCard({ tour, index }: { tour: TourRecommendationWithSlug, index: nu
                 <div>
                     <span className="text-2xl font-bold text-primary">{tour.priceRange}</span>
                     <span className="text-muted-foreground text-sm"> / чел.</span>
+                </div>
+                 <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <span className="font-semibold text-card-foreground">{rating.toFixed(1)}</span>
                 </div>
                 <Button asChild>
                     <Link href={`/tours/${tour.slug}`}>Подробнее</Link>
