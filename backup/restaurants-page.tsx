@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Search, Star, MapPin } from "lucide-react";
+import { Loader2, Search, Star, MapPin, Heart } from "lucide-react";
 import { aiRestaurantRecommendations, type AiRestaurantRecommendationsOutput } from '@/ai/flows/ai-restaurant-recommendations';
 import { Textarea } from "@/components/ui/textarea";
 import { RestaurantFilters } from "@/components/restaurant-filters";
@@ -58,6 +58,8 @@ const generateSlug = (name: string, index: number) => {
 
 
 function RestaurantCard({ recommendation, index }: { recommendation: RecommendationWithSlug, index: number }) {
+  const [isFavorite, setIsFavorite] = useState(false);
+
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-xl flex flex-col rounded-2xl">
       <div className="relative h-48 overflow-hidden">
@@ -68,8 +70,20 @@ function RestaurantCard({ recommendation, index }: { recommendation: Recommendat
           className="object-cover group-hover:scale-110 transition-transform duration-500"
           data-ai-hint={`${recommendation.cuisine.toLowerCase()} food`}
         />
+        <Button
+            size="icon"
+            variant="secondary"
+            className="absolute top-3 right-3 bg-white/80 backdrop-blur rounded-full text-black/70 hover:text-red-500 hover:bg-white transition-colors shadow"
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsFavorite(!isFavorite);
+            }}
+        >
+            <Heart className={cn("h-5 w-5", isFavorite && "fill-red-500 text-red-500")} />
+        </Button>
         {recommendation.rating && (
-            <div className="absolute top-3 right-3 bg-card/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
+            <div className="absolute top-3 left-3 bg-card/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1">
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                 <span className="font-semibold text-card-foreground">{recommendation.rating.toFixed(1)}</span>
             </div>
